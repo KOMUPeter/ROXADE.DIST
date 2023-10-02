@@ -9,15 +9,15 @@ if ( !defined('BASE_PATH')) {
 
 const ADRESSE_IP_MAINTENANCE = "45.89.174.232";
 
-const SITE_URL = 'https://support.logidents.com/';
+const SITE_URL = 'https://support.roxade.fr/';
 
 
-const SMTP_HOST = 'localhost';
-const SMTP_LOGIN = 'sup441092';
-const SMTP_PASSWORD = 'j8rWaxt6vCP7Gj(';
-const SMTP_PORT = '21';
+const SMTP_HOST = 'mail.gandi.net';
+const SMTP_LOGIN = 'support@roxade.fr';
+const SMTP_PASSWORD = 'E*9hwvkPT7b7M4%yE(';
+const SMTP_PORT = 587;
 
-const GLOBAL_HTML_TITLE = "LOGIDENTS | Support clients";
+const GLOBAL_HTML_TITLE = "ROXADE | Support clients";
 
 setlocale(LC_TIME, "fr_FR");
 
@@ -33,7 +33,9 @@ foreach($files as $file) if ($file != '.' && $file != '..') require_once ($_SERV
 $files = scandir($_SERVER['DOCUMENT_ROOT'].'/classes');
 foreach($files as $file) if ($file != '.' && $file != '..') require ($_SERVER['DOCUMENT_ROOT'].'/classes/' . $file);
 
-// require_once('PHPMailerAutoload.php');
+require_once('autoload.php');
 require_once('fpdf.php');
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 ?>

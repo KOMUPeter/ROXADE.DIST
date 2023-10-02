@@ -61,7 +61,7 @@ include('config/config.inc.php');
 				<div class="d-flex flex-center flex-lg-start flex-column">
 					<!--begin::Logo-->
 					<a href="../../demo44/dist/index.html" class="mb-7">
-						<img alt="Logo" src="assets/media/logos/sidelogo.png" class="w-25"/>
+						<img alt="Logo" src="assets/media/logos/sidelogo.png" class="w-25" />
 					</a>
 					<!--end::Logo-->
 				</div>
@@ -102,50 +102,44 @@ include('config/config.inc.php');
 								<!--end::Email-->
 							</div>
 							<!--end::Input group=-->
-							<div class="fv-row mb-3">
-								<!--begin::Password-->
+							<div class="form-group position-relative">
 								<input type="password" placeholder="Password" name="password"
 									autocomplete="new-password" maxlength="35" required
-									class="form-control bg-transparent" />
-                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                        <i class="bi bi-eye-slash"></i>
-                                    </button>
-                                    <!--end::Password-->
-								<!--end::Password-->
-							</div>
-							<!--end::Input group=-->
-							<!--begin::Wrapper-->
-							<div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
-								<div></div>
-								<!--begin::Link-->
-								<a href="../../demo44/dist/authentication/layouts/creative/reset-password.html"
-									class="link-primary">Forgot Password ?</a>
-								<!--end::Link-->
-							</div>
-							<!--end::Wrapper-->
-							<!--begin::Submit button-->
-							<div class="d-grid">
-								<button type="submit" id="kt_sign_in_submit" class="btn btn-primary">
-									<!--begin::Indicator label-->
-									<span class="indicator-label">Sign In</span>
-									<!--end::Indicator label-->
-									<!--begin::Indicator progress-->
-									<span class="indicator-progress">Please wait...
-										<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
-									<!--end::Indicator progress-->
+									class="form-control bg-transparent" id="passwordField" />
+								<button
+									class="btn btn-outline-secondary position-absolute end-0 translate-middle-y pb-5"
+									type="button" id="togglePassword">
+									<i class="bi bi-eye-slash"></i>
 								</button>
 							</div>
-							<!--end::Submit button-->
-						</form>
-						<!--end::Form-->
+
+							<!--end::Password-->
 					</div>
-					<!--end::Wrapper-->
+					<!--end::Input group=-->
+
+					<!--begin::Submit button-->
+					<div class="d-grid">
+						<button type="submit" id="kt_sign_in_submit" class="btn btn-primary">
+							<!--begin::Indicator label-->
+							<span class="indicator-label">se connecter</span>
+							<!--end::Indicator label-->
+							<!--begin::Indicator progress-->
+							<span class="indicator-progress">
+								<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+							<!--end::Indicator progress-->
+						</button>
+					</div>
+					<!--end::Submit button-->
+					</form>
+					<!--end::Form-->
 				</div>
-				<!--end::Card-->
+				<!--end::Wrapper-->
 			</div>
-			<!--end::Body-->
+			<!--end::Card-->
 		</div>
-		<!--end::Authentication - Sign-in-->
+		<!--end::Body-->
+	</div>
+	<!--end::Authentication - Sign-in-->
 	</div>
 	<!--end::Root-->
 	<!--begin::Javascript-->
@@ -156,29 +150,29 @@ include('config/config.inc.php');
 	<!--end::Global Javascript Bundle-->
 	<!--begin::Custom Javascript(used for this page only)-->
 	<script src="assets/js/custom/authentication/sign-in/general.js"></script>
-	
-<!--end::Custom Javascript-->
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-	$(document).ready(function () {
-		$("#togglePassword").click(function () {
-			
-			let passwordField = $("input[name='password']");
-			let passwordFieldType = passwordField.attr('type');
+	<!--end::Custom Javascript-->
 
-			// pour basculer 
-			if (passwordFieldType === 'password') {
-				passwordField.attr('type', 'text');
-				$("#togglePassword i").removeClass("bi-eye-slash").addClass("bi-eye");
-			} else {
-				passwordField.attr('type', 'password');
-				$("#togglePassword i").removeClass("bi-eye").addClass("bi-eye-slash");
-			}
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$("#togglePassword").click(function () {
+
+				let passwordField = $("input[name='password']");
+				let passwordFieldType = passwordField.attr('type');
+
+				// pour basculer 
+				if (passwordFieldType === 'password') {
+					passwordField.attr('type', 'text');
+					$("#togglePassword i").removeClass("bi-eye-slash").addClass("bi-eye");
+				} else {
+					passwordField.attr('type', 'password');
+					$("#togglePassword i").removeClass("bi-eye").addClass("bi-eye-slash");
+				}
+			});
 		});
-	});
 
-</script>
+	</script>
 	<!--end::Custom Javascript-->
 	<!--end::Javascript-->
 </body>

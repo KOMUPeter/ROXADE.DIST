@@ -10,9 +10,10 @@ ini_set('display_errors', 1);
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-$titrePage = "Définition des utilisateurs";
+$titrePage = "Définition des clients";
 
 
+/*
 if (isset($_GET['action'])) {
     if ($_GET['action'] == "password" && isset($_GET['n'])) {
         $user = new User();
@@ -23,8 +24,8 @@ if (isset($_GET['action'])) {
             } else {
                 echo "Échec de la modification du mot de passe.";
             }
-        } 
-    } 
+        }
+    }
     if ($_GET['action'] == "delete" && isset($_GET['n'])) {
         $user = new User();
         if ($user->LoadFromID($_GET['n'])) {
@@ -37,19 +38,12 @@ if (isset($_GET['action'])) {
 }
 
 if(isset($_POST['action'])){
-$user = new User();
+    $user = new User();
 
     print_r($_POST);
     if($_POST['action'] == 'add'){
         $login = isset($_POST['login']) ;
 
-        if (isset($_POST['admin']) && $_POST['admin'] == '1') {
-            $adminValue = 1 ; 
-            $user->setUseadmin($adminValue);
-            
-        } 
-        
-    
         if (!__FETCH("SELECT uselogin FROM users WHERE uselogin = '" . __STRING($login) . "'")) {
             $user->newRecord($_POST['login'] , $_POST['nom'] );
             // Ajouter les zones useactive & useadmin
@@ -88,10 +82,12 @@ $user = new User();
 
             }
 
+
+
         } else {
             // echo "Un utilisateur avec le même login existe déjà.";
         }
-        
+
     }
     if($_POST['action'] == 'edit'){
         if ($user->LoadFromLogin($_POST['login'])) {
@@ -101,6 +97,7 @@ $user = new User();
     }
     exit;
 }
+*/
 
 include 'include/html.inc.php';
 ?>
@@ -110,8 +107,8 @@ include 'include/html.inc.php';
 <!--begin::Body-->
 
 <body id="kt_app_body" data-kt-app-header-fixed-mobile="true" data-kt-app-sidebar-enabled="true"
-    data-kt-app-sidebar-fixed="false" data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true"
-    data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
+      data-kt-app-sidebar-fixed="false" data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true"
+      data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
 <!--begin::Theme mode setup on page load-->
 <script>var defaultThemeMode = "light"; var themeMode; if (document.documentElement) { if (document.documentElement.hasAttribute("data-bs-theme-mode")) { themeMode = document.documentElement.getAttribute("data-bs-theme-mode"); } else { if (localStorage.getItem("data-bs-theme") !== null) { themeMode = localStorage.getItem("data-bs-theme"); } else { themeMode = defaultThemeMode; } } if (themeMode === "system") { themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } document.documentElement.setAttribute("data-bs-theme", themeMode); }</script>
 <!--end::Theme mode setup on page load-->
@@ -147,7 +144,7 @@ include 'include/html.inc.php';
                                 <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3 ">
                                     <!--begin::Title-->
                                     <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
-                                        Définition des utilisateurs
+                                        Définition des clients
                                     </h1>
                                     <!--end::Title-->
 
@@ -167,10 +164,10 @@ include 'include/html.inc.php';
                                 <!--end::Page title-->
                                 <!--begin::Actions-->
                                 <div class="d-flex align-items-center gap-2 gap-lg-3">
-    
+
                                     <!--begin::Primary button-->
-                                    <a href="defuse-add.php?n=new" class="btn btn-sm fw-bold btn-primary">
-                                        <i class="fa fa-plus-circle"></i> Nouvel utilisateur</a>
+                                    <a href="defcli-add.php?n=new" class="btn btn-sm fw-bold btn-primary">
+                                        <i class="fa fa-plus-circle"></i> Nouveau client</a>
                                     <!--end::Primary button-->
                                 </div>
                                 <!--end::Actions-->
@@ -185,75 +182,84 @@ include 'include/html.inc.php';
                         <div id="kt_app_content" class="app-content  flex-column-fluid ">
 
 
-                        <!--begin::Content container-->
-                                <div id="kt_app_content_container" class="app-container  container-fluid ">
-                                    <?php $result = __QUERY("SELECT * FROM users");
+                            <!--begin::Content container-->
+                            <div id="kt_app_content_container" class="app-container  container-fluid ">
+                                <?php $result = __QUERY("SELECT * FROM clients");
 
-                                    // Vérifiez si des données ont été trouvées
-                                    if (__ROWS($result) > 0) { ?>
-                                        <table class="table table-bordered table-striped table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center">
-                                                        Actif
-                                                    </th>
-                                                    <th>
-                                                        Login
-                                                    </th>
-                                                    <th>
-                                                        Nom
-                                                    </th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            <?php
-                                            // Boucle foreach pour parcourir les données
-                                                    while ($row = __ARRAY($result)) {
+                                // Vérifiez si des données ont été trouvées
+                                if (__ROWS($result) > 0) { ?>
+                                    <table class="table table-bordered table-striped table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                Actif
+                                            </th>
+                                            <th>
+                                                Nom
+                                            </th>
+                                            <th>
+                                                Code postal / Ville
+                                            </th>
+                                            <th>
+                                                Contacts
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php
+                                        // Boucle foreach pour parcourir les données
+                                        while ($row = __ARRAY($result)) {
+                                            ?>
+                                            <tr>
+                                                <td class="text-center">
+                                                    <label
+                                                        class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
+                                                        <!--begin::Input-->
+                                                        <input class="form-check-input" name="google" type="checkbox"
+                                                               value="1" id="kt_modal_connected_accounts_google"
+                                                            <?php
+                                                            if($row['clieactive'] == 1 ){ ?>
+
+                                                               checked="checked">
+                                                        <?php
+                                                        }
                                                         ?>
-                                                <tr>
-                                                    <td class="text-center">
-                                                        <label
-                                                            class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
-                                                            <!--begin::Input-->
-                                                            <input class="form-check-input" name="google" type="checkbox"
-                                                                value="1" id="kt_modal_connected_accounts_google"
-                                                                <?php 
-                                                                    if($row['useactive'] == 1 ){ ?>
-                                                                        
-                                                                        checked="checked">
-                                                                  <?php 
-                                                                  }
-                                                                ?>
-                                                                
-                                                            <!--end::Input-->
 
-                                                            <!--begin::Label-->
-                                                            <span class="form-check-label fw-semibold text-muted"
-                                                                for="kt_modal_connected_accounts_google"></span>
-                                                            <!--end::Label-->
-                                                        </label>
-                                                    </td>
-                                                        
-                                                       <td><a href="defuse-add.php?n=<?= $row['useid'] ?>">  <?= $row['uselogin'] ?></a></td>
-                                                       <td><a href="defuse-add.php?n=<?= $row['useid'] ?>">  <?= $row['usenom'] ?> </a></td>
-                                    
+                                                        <!--end::Input-->
+
+                                                        <!--begin::Label-->
+                                                        <span class="form-check-label fw-semibold text-muted"
+                                                              for="kt_modal_connected_accounts_google"></span>
+                                                        <!--end::Label-->
+                                                    </label>
+                                                </td>
+
+                                                <td><a href="defcli-add.php?n=<?= $row['cliid'] ?>">  <?= $row['clinom'] ?> </a></td>
+                                                <td><a href="defcli-add.php?n=<?= $row['cliid'] ?>">  <?= $row['clicp']." ".$row['cliville'] ?> </a></td>
+
+                                                <td>
+                                                    <?php
+                                                    /*
+                                                     * Afficher ici le ou les contacts rattachés au client et un lien vers defcli-ctc.php?n=[id-contact] pour l'édition
+                                                     */
+                                                    ?>
+                                                    <a href="defctc-add.php?c=<?= $row['cliid'] ?>&n=new">  ajouter un contact </a>
+                                                </td>
                                                 <td class="text-center">
                                                     <div class="text-nowrap">
-                                                        <a href="javascript:confirmGeneratePassword(<?= $row['useid'] ?>);"><i
-                                                                class="fa fa-key text-warning"></i></a>
-                                                        <a href="javascript:confirmDeleteUser(<?= $row['useid'] ?>);"><i
+                                                        <a href="javascript:confirmDeleteClient(<?= $row['cliid'] ?>);"><i
                                                                 class="fa fa-trash-alt text-danger"></i></a>
                                                     </div>
                                                 </td>
                                             </tr>
-                                                    <?php } ?> 
+                                        <?php } ?>
                                         </tbody>
                                     </table>
-                                  <?php 
+                                    <?php
                                 }  ?>
-                                </div>
-                        <!--end::Content container-->
+                            </div>
+                            <!--end::Content container-->
                         </div>
                         <!--end::Content-->
 
@@ -261,32 +267,32 @@ include 'include/html.inc.php';
                     <!--end::Content wrapper-->
 
 
-                <!--end:::Main-->
+                    <!--end:::Main-->
+
+                </div>
 
             </div>
-
+            <!--end::Wrapper-->
         </div>
-        <!--end::Wrapper-->
+        <!--end::Page-->
+        <!--end::App-->
     </div>
-    <!--end::Page-->
-    <!--end::App-->
-</div>
 
-<!--begin::Scrolltop-->
-<div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
-    <i class="ki-outline ki-arrow-up"></i>
-</div>
-<!--end::Scrolltop-->
+    <!--begin::Scrolltop-->
+    <div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
+        <i class="ki-outline ki-arrow-up"></i>
+    </div>
+    <!--end::Scrolltop-->
 
-<!--begin::Javascript-->
-<?php include('include/javascript.inc.php') ?>
+    <!--begin::Javascript-->
+    <?php include('include/javascript.inc.php') ?>
 
     <script type="text/javascript">
 
-        function confirmGeneratePassword(n) {
+        function confirmDeleteClient(n) {
             Swal.fire({
                 title: "Confirmation",
-                text: "Confirmez-vous la génération d'un nouveau mot de passe pour cet utilisateur ?",
+                text: "Confirmez-vous la suppression de ce client ?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -295,31 +301,12 @@ include 'include/html.inc.php';
                 cancelButtonText: 'Non'
             }).then((result) => {
                 if (result.value) {
-                    window.location='defuse.php?action=password&n='+n
+                    window.location='defcli.php?action=delete&n='+n
                 }
-                console.log('confirm generate password');
-            });
-        }
-
-        function confirmDeleteUser(n) {
-            Swal.fire({
-                title: "Confirmation",
-                text: "Confirmez-vous la suppression de cet utilisateur ?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Oui',
-                cancelButtonText: 'Non'
-            }).then((result) => {
-                if (result.value) {
-                    window.location='defuse.php?action=delete&n='+n
-                }
-                console.log('confirm generate password');
             });
         }
     </script>
-<!--end::Javascript-->
+    <!--end::Javascript-->
 
 </body>
 <!--end::Body-->

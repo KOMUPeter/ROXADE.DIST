@@ -4,7 +4,6 @@ require_once ('config/config.inc.php');
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
 $HTML = "<html><body><div>Message TEST</div></body>";
 $TEXT = "Message TEST";
 $mail = new PHPMailer();
@@ -29,5 +28,7 @@ $mail->SMTPOptions = array(
 );
 $mail->addAddress("xavier.roche@free.fr");
 $mail->Send();
+echo 'Email sent successfully';
+
 
 

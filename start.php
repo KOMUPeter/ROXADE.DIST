@@ -6,9 +6,8 @@ include('config/config.inc.php');
 if (isset($_POST['email']) && isset($_POST['password'])) {
     // Verify the CSRF token
 
-    // var_dump($_POST);
-
     verifyToken();
+
 
     // Get user input
     $email = $_POST['email'];
@@ -31,7 +30,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         ) VALUES (
         "' . __STRING($codeToken) . '", 
         NOW(), 
-        DATE_ADD(NOW(), INTERVAL 300 SECOND), 
+        DATE_ADD(NOW(), INTERVAL 86400 SECOND), 
         ' . $user->getUseid() . ', 
         "' . __STRING($_SERVER['REMOTE_ADDR']) . '", 
         "' . __STRING($_SERVER['HTTP_USER_AGENT']) . '"    
@@ -39,12 +38,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         );
 
         // Set a COOKIE for the user
-        $cookie_name = 'token';
-        $cookie_value = $codeToken;
-        $cookie_expiration = time() + 300;
-        $cookie_path = '/';
-
-        setcookie($cookie_name, $cookie_value, $cookie_expiration, $cookie_path);
+        setcookie('token', $codeToken, time() + 86400, '/');
         // si le cookie return url est présent ou non , alors appeler cette header.
 
         if (isset($_COOKIE['return_url'])) {
@@ -56,9 +50,11 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         } else {
             // Redirect to the user's dashboard or another page
             // echo 'redirection index';
+
             header('location: index.php');
             exit;
         }
+
     } else {
         // Authentication failed
         // echo 'authentification failed';

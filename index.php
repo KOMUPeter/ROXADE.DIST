@@ -1,7 +1,9 @@
 <!--begin::Head-->
 <?php 
 include 'config/config.inc.php'; 
-include 'config/login.inc.php';
+include 'config/login.inc.php'; 
+?>
+<?php
 include('include/html.inc.php') 
 ?>
 <!--end::Head-->

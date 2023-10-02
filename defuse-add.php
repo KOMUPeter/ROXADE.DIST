@@ -1,13 +1,9 @@
-<!--begin::Head-->
 <?php
 include 'config/config.inc.php';
 include 'config/login.inc.php';
 
 $titrePage = "Définition des utilisateurs";
-
-
-
-
+error_reporting(E_ALL);
 
 include('include/html.inc.php')
     ?>
@@ -119,7 +115,7 @@ include('include/html.inc.php')
                                         <?php
                                         randomToken();
                                         addToken();
-                                        if ($_GET['n'] == "new") {
+                                        if (isset($_GET['n']) == "new") {
                                             ?>
                                             <input type="hidden" name="action" value="add">
                                             <input type="hidden" name="id" value="0">
@@ -127,12 +123,13 @@ include('include/html.inc.php')
                                         } else {
                                             ?>
                                             <input type="hidden" name="action" value="edit">
-                                            <input type="hidden" name="id" value="<?= $_GET['n'] ?>">
+                                            <input type="hidden" name="id"
+                                                value="<?= isset($_GET['n']) ? $_GET['n'] : '' ?>">
+
                                             <?php
                                         }
                                         ?>
-                                        
-                                        
+
                                         <div class="mb-10">
                                             <label class="form-label required">Login</label>
                                             <input type="email" class="form-control form-control-solid" maxlength="120"
@@ -146,10 +143,25 @@ include('include/html.inc.php')
                                         <div class="mb-10">
                                             <label
                                                 class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
-                                                <!--begin::Input-->
+                                                <!--begin::Inputs-->
                                                 <input class="form-check-input" name="google" type="checkbox" value="1"
                                                     id="kt_modal_connected_accounts_google" checked="checked">
-                                                <!--end::Input-->
+
+                                                <!-- Actif -->
+                                                <div class="mb-10">
+                                                    <label class="form-label required">Actif</label>
+                                                    <input class="form-check-input" name="actif" type="checkbox"
+                                                        value="1" id="checkbox_actif">
+                                                </div>
+                                                <!-- ADMIN -->
+
+                                                <div class="mb-10">
+                                                    <label class="form-label required">Admin</label>
+                                                    <input class="form-check-input" name="admin" type="checkbox"
+                                                    value="1" id="checkbox_admin">
+                                                </div>
+
+                                                <!--end::Inputs-->
 
                                                 <!--begin::Label-->
                                                 <span class="form-check-label fw-semibold text-muted"
