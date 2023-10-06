@@ -4,6 +4,9 @@ require_once ('config/config.inc.php');
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+
+// require 'vendor/autoload.php';
+
 $HTML = "<html><body><div>Message TEST</div></body>";
 $TEXT = "Message TEST";
 $mail = new PHPMailer();

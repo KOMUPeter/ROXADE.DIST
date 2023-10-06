@@ -2,6 +2,36 @@
 include 'config/config.inc.php';
 include 'config/login.inc.php';
 
+$clientName = '';
+$clientAdr = "";
+$clientCp = "";
+$clientVille = "";
+$clientUrl = "";
+$clientTel = "";
+$clientEmail = "";
+$clientId = 0;
+
+if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['n']) && $_GET['n'] == 'edit') {
+    // $clientId = intval($_GET['id']);
+    // Load user from database using ID
+    $client = new Client();
+    if ($client->LoadClientFromID($_GET['id'])) {
+        // fetch client fields
+        $clientName = $client->getClinom();
+        $clientAdr = $client->getCliadr();
+        $clientCp = $client->getClicp();
+        $clientVille = $client->getCliville();
+        $clientUrl = $client->getCliurl();
+        $clientTel = $client->getClitel();
+        $clientEmail = $client->getCliemail();
+    
+    } else {
+        echo "Client not found.";
+        exit;
+    }
+} 
+
+
 $titrePage = "Définition des clients";
 error_reporting(E_ALL);
 
@@ -112,72 +142,62 @@ include('include/html.inc.php')
                             <!--begin::Content container-->
                             <div id="kt_app_content_container" class="app-container  container-fluid ">
                                 <form method="post" action="defcli.php">
-                                    <?php
+                                <?php
                                     randomToken();
                                     addToken();
-                                    if (isset($_GET['n']) == "new") {
-                                        ?>
-                                        <input type="hidden" name="action" value="add">
-                                        <input type="hidden" name="id" value="0">
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <input type="hidden" name="action" value="edit">
-                                        <input type="hidden" name="id"
-                                               value="<?= isset($_GET['n']) ? $_GET['n'] : '' ?>">
-
-                                        <?php
-                                    }
+                                    $n = isset($_GET['n']) ? $_GET['n'] : '';
                                     ?>
-
+                                    <input type="hidden" name="action" value="<?= $n === "new" ? "add" : ($n === "edit" ? "edit" : "") ?>">
+                                    <input type="hidden" name="id"
+                                        value="<?= isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : "0" ?>">
+                        
                                     <div class="mb-10">
                                         <label class="form-label required">Nom</label>
-                                        <input type="text" class="form-control form-control-solid" maxlength="100"
-                                               required name="nom" placeholder="Nom du client">
+                                        <input type="text" class="form-control form-control-solid" maxlength="100" required name="nom"
+                                            placeholder="Nom du client" value="<?= $clientName ?>">
                                     </div>
                                     <div class="mb-10">
                                         <label class="form-label required">Adresse</label>
-                                        <textarea rows="3" class="form-control form-control-solid"
-                                                  required name="adresse" placeholder="Adresse postale du client"></textarea>
+                                        <textarea rows="3" class="form-control form-control-solid" required name="adresse"
+                                            placeholder="Adresse postale du client"><?= $clientAdr ?></textarea>
                                     </div>
                                     <div class="mb-10">
                                         <label class="form-label required">Code postal</label>
-                                        <input type="text" class="form-control form-control-solid" maxlength="9"
-                                               required name="code-postal" placeholder="Code postal du client">
+                                        <input type="text" class="form-control form-control-solid" maxlength="9" required name="code-postal"
+                                            value="<?= $clientCp ?>" placeholder="Code postal du client">
                                     </div>
                                     <div class="mb-10">
                                         <label class="form-label required">Ville</label>
-                                        <input type="text" class="form-control form-control-solid" maxlength="50"
-                                               required name="ville" placeholder="Ville du client">
+                                        <input type="text" class="form-control form-control-solid" maxlength="50" required name="ville"
+                                            value="<?= $clientVille ?>" placeholder="Ville du client">
                                     </div>
                                     <div class="mb-10">
                                         <label class="form-label">Site web</label>
-                                        <input type="url" class="form-control form-control-solid" maxlength="200"
-                                               name="site-web" placeholder="Adresse du site internet du client">
+                                        <input type="url" class="form-control form-control-solid" maxlength="200" name="site-web"
+                                            value="<?= $clientUrl ?>" placeholder="Adresse du site internet du client">
                                     </div>
                                     <div class="mb-10">
                                         <label class="form-label">Téléphone</label>
-                                        <input type="text" class="form-control form-control-solid" maxlength="25"
-                                                name="telephone" placeholder="Téléphone du client">
+                                        <input type="text" class="form-control form-control-solid" maxlength="25" name="telephone"
+                                            value="<?= $clientTel ?>" placeholder="Téléphone du client">
                                     </div>
                                     <div class="mb-10">
                                         <label class="form-label">Adresse Email</label>
-                                        <input type="email" class="form-control form-control-solid" maxlength="120"
-                                                name="email" placeholder="Adresse email du client">
+                                        <input type="email" class="form-control form-control-solid" maxlength="120" name="email"
+                                            value="<?= $clientEmail ?>" placeholder="Adresse email du client">
                                     </div>
                                     <div class="mb-10">
-                                        <label
-                                            class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
+                                        <label class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
                                             <!--begin::Inputs-->
                                             <input class="form-check-input" name="google" type="checkbox" value="1"
-                                                   id="kt_modal_connected_accounts_google" checked="checked">
-
-
+                                                id="kt_modal_connected_accounts_google" checked="checked">
+                        
+                        
                                             <!--end::Inputs-->
-
+                        
                                             <!--begin::Label-->
-                                            <span class="form-check-label fw-semibold text-muted"
-                                                  for="kt_modal_connected_accounts_google"> Compte actif</span>
+                                            <span class="form-check-label fw-semibold text-muted" for="kt_modal_connected_accounts_google">
+                                                Compte actif</span>
                                             <!--end::Label-->
                                         </label>
                                     </div>
@@ -195,13 +215,13 @@ include('include/html.inc.php')
                                         <a href="defcli.php" class="btn btn-secondary">Annuler</a>
                                     </div>
                                 </form>
-
+                        
                             </div>
                             <!--end::Content container-->
                         </div>
                         <!--end::Content-->
-
-                    </div>
+                        
+                        </div>
                     <!--end::Content wrapper-->
 
 

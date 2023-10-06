@@ -37,15 +37,35 @@ class User
     public function LoadFromLogin($uselogin)
     {
 
-        if ($result = __FETCH('SELECT useid FROM users WHERE uselogin = "'. __STRING($uselogin) .'"')) {
+        if ($result = __FETCH('SELECT useid FROM users WHERE uselogin = "' . __STRING($uselogin) . '"')) {
 
             return ($this->loadFromID($result['useid']));
-           
+
         } else {
 
             return false;
         }
     }
+
+    public function updateEmail($email)
+    {
+        $this->uselogin = $email;
+
+        __QUERY('UPDATE users SET uselogin = "' . __STRING($email) . '" WHERE useid = "' . $this->useid . '"');
+
+        return __AFFECTED();
+    }
+
+    public function updateName($name)
+    {
+        $this->usenom = $name;
+
+        __QUERY('UPDATE users SET usenom = "' . __STRING($name) . '" WHERE useid = "' . $this->useid . '"');
+
+        return __AFFECTED();
+    }
+
+
 
     public function newRecord($login, $nom)
     {
@@ -54,6 +74,7 @@ class User
         $this->loadFromID(__INSERT_ID());
 
     }
+
 
     public function changePassword()
     {
@@ -99,6 +120,7 @@ class User
             
         }
         */
+        return ($password);
     }
 
     public function deleteUser()
@@ -166,7 +188,7 @@ class User
      */
     public function setUseadmin($useadmin): self
     {
-        $this->useadmin = $useadmin;
+        __QUERY('UPDATE users SET useadmin = "' . $useadmin . '" WHERE useid = "' . $this->useid . '"');
         return $this;
     }
 }

@@ -3,8 +3,6 @@
 include 'config/config.inc.php'; 
 include 'config/login.inc.php';
 include('include/html.inc.php') 
-
-
 ?>
 <!--end::Head-->
 

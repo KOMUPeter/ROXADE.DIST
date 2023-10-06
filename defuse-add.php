@@ -2,12 +2,38 @@
 include 'config/config.inc.php';
 include 'config/login.inc.php';
 
+$userLogin = '';
+$userName = '';
+$userId = 0; // Initialisation de l'ID de l'utilisateur
+
+if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['n']) && $_GET['n'] == 'edit') {
+    $userId = intval($_GET['id']);
+
+    // Chargez l'utilisateur à partir de la base de données en utilisant l'ID
+    $user = new User();
+    if ($user->LoadFromID($userId)) {
+        $userLogin = $user->getUselogin();
+        $userName = $user->getUsenom();
+    } else {
+        // cas où l'utilisateur n'a pas été trouvé
+        echo "Utilisateur non trouvé.";
+        exit;
+    }
+}
+
+
+
+
+
 $titrePage = "Définition des utilisateurs";
 error_reporting(E_ALL);
 
-include('include/html.inc.php')
-    ?>
+include('include/html.inc.php');
+?>
+
 <!--end::Head-->
+
+
 
 <!--begin::Body-->
 
@@ -110,62 +136,54 @@ include('include/html.inc.php')
 
 
                                 <!--begin::Content container-->
-                                <div id="kt_app_content_container" class="app-container  container-fluid ">
+                                <div id="kt_app_content_container" class="app-container container-fluid ">
                                     <form method="post" action="defuse.php">
                                         <?php
                                         randomToken();
                                         addToken();
-                                        if (isset($_GET['n']) == "new") {
-                                            ?>
-                                            <input type="hidden" name="action" value="add">
-                                            <input type="hidden" name="id" value="0">
-                                            <?php
-                                        } else {
-                                            ?>
-                                            <input type="hidden" name="action" value="edit">
-                                            <input type="hidden" name="id"
-                                                value="<?= isset($_GET['n']) ? $_GET['n'] : '' ?>">
-
-                                            <?php
-                                        }
+                                        $n = isset($_GET['n']) ? $_GET['n'] : '';
                                         ?>
+                                        <input type="hidden" name="action"
+                                            value="<?= $n === "new" ? "add" : ($n === "edit" ? "edit" : "") ?>">
+                                        <input type="hidden" name="id"
+                                            value="<?= isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : "0" ?>">
 
                                         <div class="mb-10">
                                             <label class="form-label required">Login</label>
                                             <input type="email" class="form-control form-control-solid" maxlength="120"
-                                                required autofocus name="login" placeholder="Adresse Email">
+                                                required autofocus name="login" placeholder="Adresse Email"
+                                                value="<?= $userLogin ?>">
+
                                         </div>
                                         <div class="mb-10">
                                             <label class="form-label required">Nom en clair</label>
                                             <input type="text" class="form-control form-control-solid" maxlength="100"
-                                                required name="nom" placeholder="Nom de l'utilisateur">
+                                                required name="nom" placeholder="Nom de l'utilisateur"
+                                                value="<?= $userName ?>">
                                         </div>
-                                        <div class="mb-10">
+                                        <div class="mb-10 d-flex flex-column gap-4">
                                             <label
                                                 class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
                                                 <!--begin::Inputs-->
                                                 <input class="form-check-input" name="google" type="checkbox" value="1"
                                                     id="kt_modal_connected_accounts_google" checked="checked">
-
-                                                <!-- Actif -->
-                                                <div class="mb-10">
-                                                    <label class="form-label required">Actif</label>
-                                                    <input class="form-check-input" name="actif" type="checkbox"
-                                                        value="1" id="checkbox_actif">
-                                                </div>
-                                                <!-- ADMIN -->
-
-                                                <div class="mb-10">
-                                                    <label class="form-label required">Admin</label>
-                                                    <input class="form-check-input" name="admin" type="checkbox"
-                                                    value="1" id="checkbox_admin">
-                                                </div>
-
                                                 <!--end::Inputs-->
-
                                                 <!--begin::Label-->
                                                 <span class="form-check-label fw-semibold text-muted"
                                                     for="kt_modal_connected_accounts_google"> Connexion autorisée</span>
+                                                <!--end::Label-->
+                                            </label>
+
+                                            <!-- Nouveau bouton Admin -->
+                                            <label
+                                                class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
+                                                <!--begin::Inputs-->
+                                                <input class="form-check-input" name="admin" type="checkbox" value="1"
+                                                    id="kt_modal_connected_accounts_admin" <?= ($userId > 0 && $user->getUseadmin() == 1) ? 'checked' : '' ?>>
+                                                <!--end::Inputs-->
+                                                <!--begin::Label-->
+                                                <span class="form-check-label fw-semibold text-muted"
+                                                    for="kt_modal_connected_accounts_admin"> Admin</span>
                                                 <!--end::Label-->
                                             </label>
                                         </div>

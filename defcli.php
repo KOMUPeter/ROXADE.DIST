@@ -3,9 +3,9 @@
 require_once ('config/config.inc.php');
 require_once ('config/login.inc.php');
 
-
-error_reporting(E_ALL);
 ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -13,23 +13,22 @@ use PHPMailer\PHPMailer\Exception;
 $titrePage = "Définition des clients";
 
 
-/*
 if (isset($_GET['action'])) {
-    if ($_GET['action'] == "password" && isset($_GET['n'])) {
-        $user = new User();
-        if ($user->LoadFromID($_GET['n'])) {
-            $newPassword = $user->changePassword();
-            if ($newPassword !== false) {
-                echo "Nouveau mot de passe généré : " . $newPassword;
-            } else {
-                echo "Échec de la modification du mot de passe.";
-            }
+    $action = $_GET['action'];
+    $client = new Client();
+    
+    if ($_GET['action'] == "cliid" && isset($_GET['n'])) {
+        $client = new Client();
+        var_dump('hello');
+        if ($client->loadClientFromID($_GET['n'])) {
         }
-    }
+    }var_dump('hello');
     if ($_GET['action'] == "delete" && isset($_GET['n'])) {
-        $user = new User();
-        if ($user->LoadFromID($_GET['n'])) {
-            if ($user->getUseid() != $userConnected->getUseid()) $user->deleteUser();
+        $client = new Client();var_dump('hello');
+        if ($client->loadClientFromID($_GET['n'])) {
+            if ($client->getCliid()) {
+                $client->deleteClient();
+            }var_dump('hello');
         }
     }
 
@@ -37,67 +36,84 @@ if (isset($_GET['action'])) {
     exit;
 }
 
-if(isset($_POST['action'])){
-    $user = new User();
-
-    print_r($_POST);
-    if($_POST['action'] == 'add'){
-        $login = isset($_POST['login']) ;
-
-        if (!__FETCH("SELECT uselogin FROM users WHERE uselogin = '" . __STRING($login) . "'")) {
-            $user->newRecord($_POST['login'] , $_POST['nom'] );
-            // Ajouter les zones useactive & useadmin
-            $nouveauMotDePasse = $user->changePassword();
-
-            $HTML = "<html><body><div>Support Roxade bonjour.</div></body>";
-            $TEXT = "Votre nouveau mot de passe est : " . $nouveauMotDePasse;
-            $mail = new PHPMailer();
-            $mail->From = "support@roxade.fr";
-            $mail->FromName = "ROXADE";
-            $mail->IsSMTP();
-            $mail->Host = SMTP_HOST;
-            $mail->Port = SMTP_PORT;
-            $mail->SMTPAuth = true;
-            $mail->Username = SMTP_LOGIN;
-            $mail->Password = SMTP_PASSWORD;
-            $mail->Subject = mb_encode_mimeheader("Votre mot de passe Roxade");
-            $mail->Body = $HTML;
-            $mail->AltBody = $TEXT;
-            $mail->IsHTML(true);
-            $mail->SMTPOptions = array(
-                'ssl' => array(
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                    'allow_self_signed' => true
-                )
-            );
-
-            $mail->addAddress($user->getUselogin());
-            if ($mail->Send()) {
-
-                // Prévoir envoi email via phpmailer
-                return ($password);
-            } else {
-                return false; //echec de l'envoie
-
-            }
-
-
-
-        } else {
-            // echo "Un utilisateur avec le même login existe déjà.";
+if (isset($_POST['action'])) {
+    $client = new Client();
+    var_dump('hello');
+    $clinom = isset($_POST['nom']) ? $_POST['nom'] : null;
+    $cliadr = isset($_POST['adresse']) ? $_POST['adresse'] : null;
+    $clicp = isset($_POST['code-postal']) ? $_POST['code-postal'] : null;
+    $cliville = isset($_POST['ville']) ? $_POST['ville'] : null;
+    $cliurl = isset($_POST['site-web']) ? $_POST['site-web'] : null;
+    $clitel = isset($_POST['telephone']) ? $_POST['telephone'] : null;
+    $cliemail = isset($_POST['email']) ? $_POST['email'] : null;
+    var_dump('hello');
+    if ($_POST['action'] == 'add') {
+        if (__FETCH("SELECT clinom FROM clients WHERE clinom = '" .__STRING($clinom). "'")) {
+            // Handle the case when a client with the same 'clinom' already exists.
         }
-
+        $client->newClientRecord();
+        $client->setClinom($clinom);
+        var_dump('hello');
     }
-    if($_POST['action'] == 'edit'){
-        if ($user->LoadFromLogin($_POST['login'])) {
-            $user->setUsenom($_POST['nom']);
-
+    if ($_POST['action'] == 'edit') {
+        if (!$client->loadClientFromID($_POST['id'])) {
+            // Handle the case when the client is not found.
+            var_dump('hello');
         }
     }
+
+    $client->setCliadr($cliadr);
+    $client->setClicp($clicp);
+    $client->setCliville($cliville);
+    $client->setCliurl($cliurl);
+    $client->setClitel($clitel);
+    $client->setCliemail($cliemail);
+    var_dump('hello');
+    header('Location: defcli.php');
     exit;
+    
+    /*
+    if ($_POST['action'] == 'add') {
+
+        $clinom = isset($_POST['nom']) ? $_POST['nom'] : null;
+        $cliadr = isset($_POST['adresse']) ? $_POST['adresse'] : null;
+        $clicp = isset($_POST['code-postal']) ? $_POST['code-postal'] : null;
+        $cliville = isset($_POST['ville']) ? $_POST['ville'] : null;
+        $cliurl = isset($_POST['site-web']) ? $_POST['site-web'] : null;
+        $clitel = isset($_POST['telephone']) ? $_POST['telephone'] : null;
+        $cliemail = isset($_POST['email']) ? $_POST['email'] : null;
+
+
+        if (!__FETCH("SELECT clinom FROM clients WHERE clinom = '" .__STRING($clinom). "'")) {
+
+            $client->newClientRecord(
+                $clinom,
+                $cliadr,
+                $clicp,
+                $cliville,
+                $cliurl,
+                $clitel,
+                $cliemail
+            );
+            
+            header('Location: defcli.php');
+            exit;
+            
+        } 
+        else {
+            // Handle the case when a client with the same 'clinom' already exists.
+        }
+    }
+    if ($_POST['action'] == 'edit') {
+        if ($client->loadClientFromID($_POST['nom'])) {
+            $client->setClinom($_POST['nom']);
+            // ADD ALL FIELDS
+        }
+    }
+    */
+    // exit;
 }
-*/
+
 
 include 'include/html.inc.php';
 ?>
@@ -107,8 +123,8 @@ include 'include/html.inc.php';
 <!--begin::Body-->
 
 <body id="kt_app_body" data-kt-app-header-fixed-mobile="true" data-kt-app-sidebar-enabled="true"
-      data-kt-app-sidebar-fixed="false" data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true"
-      data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
+    data-kt-app-sidebar-fixed="false" data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true"
+    data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
 <!--begin::Theme mode setup on page load-->
 <script>var defaultThemeMode = "light"; var themeMode; if (document.documentElement) { if (document.documentElement.hasAttribute("data-bs-theme-mode")) { themeMode = document.documentElement.getAttribute("data-bs-theme-mode"); } else { if (localStorage.getItem("data-bs-theme") !== null) { themeMode = localStorage.getItem("data-bs-theme"); } else { themeMode = defaultThemeMode; } } if (themeMode === "system") { themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } document.documentElement.setAttribute("data-bs-theme", themeMode); }</script>
 <!--end::Theme mode setup on page load-->
@@ -203,6 +219,12 @@ include 'include/html.inc.php';
                                             <th>
                                                 Contacts
                                             </th>
+                                            <th>
+                                            Ajouter
+                                            </th>
+                                            <th>
+                                            Supprimer
+                                            </th>
                                             <th></th>
                                         </tr>
                                         </thead>
@@ -214,29 +236,22 @@ include 'include/html.inc.php';
                                             <tr>
                                                 <td class="text-center">
                                                     <label
-                                                        class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
+                                                        class="form-check form-switch form-switch-sm form-check-custom form-check-solid justify-content-center">
                                                         <!--begin::Input-->
-                                                        <input class="form-check-input" name="google" type="checkbox"
-                                                               value="1" id="kt_modal_connected_accounts_google"
-                                                            <?php
-                                                            if($row['clieactive'] == 1 ){ ?>
-
-                                                               checked="checked">
-                                                        <?php
-                                                        }
-                                                        ?>
-
+                                                        
+                                                            <input class="form-check-input " data-id="<?= $row['cliid'] ?>" type="checkbox"   <?php if ($row['cliactive'] == 1) { ?> checked="checked" <?php } ?>>
                                                         <!--end::Input-->
 
                                                         <!--begin::Label-->
                                                         <span class="form-check-label fw-semibold text-muted"
-                                                              for="kt_modal_connected_accounts_google"></span>
+                                                            for="kt_modal_connected_accounts_google"></span>
                                                         <!--end::Label-->
                                                     </label>
                                                 </td>
 
-                                                <td><a href="defcli-add.php?n=<?= $row['cliid'] ?>">  <?= $row['clinom'] ?> </a></td>
-                                                <td><a href="defcli-add.php?n=<?= $row['cliid'] ?>">  <?= $row['clicp']." ".$row['cliville'] ?> </a></td>
+                                                <td><a href="defcli-add.php?id=<?= $row['cliid'] ?>&n=edit"><?= $row['clinom'] ?> </a></td>
+                                                <td><a href="defcli-add.php?id=<?= $row['cliid'] ?>&n=edit"><?= $row['clicp']." ".$row['cliville'] ?> </a></td>
+                                                <td><a href="defcli-add.php?id=<?= $row['cliid'] ?>&n=edit"><?= $row['clitel'] ?> </a></td>
 
                                                 <td>
                                                     <?php
@@ -286,8 +301,15 @@ include 'include/html.inc.php';
 
     <!--begin::Javascript-->
     <?php include('include/javascript.inc.php') ?>
-
     <script type="text/javascript">
+
+    $(document).ready(function () {
+                $('.form-check-input').click(function () {
+                    $.ajax({
+                        url: './defcli-switch.php?f=active&n=' + $(this).data('id') + '&c=' +  $(this).is(':checked')
+                    });
+                });
+            });
 
         function confirmDeleteClient(n) {
             Swal.fire({
