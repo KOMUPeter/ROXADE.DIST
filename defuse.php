@@ -16,6 +16,7 @@ $titrePage = "Définition des utilisateurs";
 
 //conditions :
 
+
 if (isset($_GET)) {
 
     if (isset($_GET['action'])) {
@@ -53,9 +54,9 @@ if (isset($_GET)) {
                 $mail->Send();
 
                 if ($newPassword !== false) {
-                    echo "Nouveau mot de passe généré : " . $newPassword;
+                    $application->addToast('success','Mot de passe','Le nouveau mot de passe a été généré avec succès.');
                 } else {
-                    echo "Échec de la modification du mot de passe.";
+                    $application->addToast('danger','Mot de passe','Échec de la modification du mot de passe.');
                 }
             }
         }
@@ -66,12 +67,14 @@ if (isset($_GET)) {
                 if ($user->LoadFromID($_GET['n'])) {
                     if ($user->getUseid() != $userConnected->getUseid())
                         $user->deleteUser();
+                    
+                    $application->addToast('success','Supression','l\'utilisateur a été supprimer.');
                 }
             }
+
             header('Location: ' . basename($_SERVER['PHP_SELF']));
             exit;
        
-
     }
 }
 
@@ -117,23 +120,22 @@ if (isset($_POST)) {
                 );
                 $mail->addAddress($user->getUselogin());
                 $mail->Send();
-
                 // $mail->addAddress('antoine020999@gmail.com'); // adresse du destinataire ici
                 // $mail->addAddress($user->getUselogin());
                     if ($mail->Send()) {
-                        echo "L'e-mail a été envoyé avec succès.";
+                        $application->addToast('success','Email','E-mail a envoyé avec succès.');
+
                     } else {
-                        echo "Échec de l'envoi de l'e-mail : " . $mail->ErrorInfo;
+                        $mail->ErrorInfo;
+                        $application->addToast('danger','Email','Échec de l\'envoi de l\'e-mail.');
+
                     }
                 
             } else {
-                echo "Un utilisateur avec le même login existe déjà.";
+                $application->addToast('danger','Email','Un utilisateur avec le même login existe déjà.');
             }
         }
             
-            
-        
-
         //edition utilisateur
 
         if ($_POST['action'] == 'edit' && isset($_POST['id']) && is_numeric($_POST['id']) && isset($_POST['login']) && isset($_POST['nom'])) {
@@ -145,11 +147,12 @@ if (isset($_POST)) {
             if ($user->LoadFromID($userId)) {
                 $user->updateEmail($newLogin);
                 $user->updateName($newName);
-        
                 // Redirigez l'utilisateur après la mise à jour
                 header('Location: defuse.php');
                 exit;
             }
+            $application->addToast('succes','Modification Utilisateur','l\'utilisateur a bien été modifier.');
+
         }
         
 
@@ -322,9 +325,7 @@ include 'include/html.inc.php';
                                                         <td><a href="defuse-add.php?id=<?= $row['useid'] ?>&n=edit">
                                                                 <?= $row['usenom'] ?>
                                                             </a></td>
-
                                                         
-
                                                         <td class="text-center">
                                                             <div class="text-nowrap">
                                                                 <a
@@ -422,6 +423,8 @@ include 'include/html.inc.php';
             }
 
         </script>
+
+        
         <!--end::Javascript-->
 
 </body>

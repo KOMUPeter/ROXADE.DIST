@@ -3041,7 +3041,6 @@
                                     <!--begin:Menu link-->
                                     <a class="menu-link"
                                         href="defuse.php"
-                                        target="_blank"
                                         title="Check out over 200 in-house components, plugins and ready for use solutions"
                                         data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click"
                                         data-bs-placement="right">
@@ -3057,7 +3056,7 @@
                                 <div class="menu-item">
                                     <!--begin:Menu link-->
                                     <a class="menu-link" href="defuse-add.php"
-                                        target="_blank" title="Check out the complete documentation"
+                                        title="Check out the complete documentation"
                                         data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click"
                                         data-bs-placement="right">
                                         <span class="menu-icon">
@@ -3072,7 +3071,7 @@
                         </div>
                         <!-- *********************************************** end of defuse Pages *************************************-->
 
-                        <!-- *********************************************** begin of client Pages *************************************-->
+                        <!-- ************************************ begin of client Pages *************************************-->
                         <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
                             data-kt-menu-placement="bottom-start"
                             class="menu-item menu-lg-down-accordion menu-sub-lg-down-indention me-0 me-lg-2">
@@ -3090,7 +3089,6 @@
                                     <!--begin:Menu link-->
                                     <a class="menu-link"
                                         href="defcli.php"
-                                        target="_blank"
                                         title="Check out over 200 in-house components, plugins and ready for use solutions"
                                         data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click"
                                         data-bs-placement="right">
@@ -3106,7 +3104,7 @@
                                 <div class="menu-item">
                                     <!--begin:Menu link-->
                                     <a class="menu-link" href="defcli-add.php"
-                                        target="_blank" title="Check out the complete documentation"
+                                        title="Check out the complete documentation"
                                         data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click"
                                         data-bs-placement="right">
                                         <span class="menu-icon">
@@ -3119,7 +3117,55 @@
                             </div>
                             <!--end:Menu sub-->
                         </div>
-                        <!-- *********************************************** end of client Pages *************************************-->
+                        <!-- ******************************* end of client Pages *************************************-->
+
+                        <!-- ************************************ begin of ticket Pages *************************************-->
+                        <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+                            data-kt-menu-placement="bottom-start"
+                            class="menu-item menu-lg-down-accordion menu-sub-lg-down-indention me-0 me-lg-2">
+                            <!--begin:Menu link-->
+                            <span class="menu-link">
+                                <span class="menu-title">Tickets</span>
+                                <span class="menu-arrow d-lg-none"></span>
+                            </span>
+                            <!--end:Menu link-->
+                            <!--begin:Menu sub-->
+                            <div
+                                class="menu-sub menu-sub-lg-down-accordion menu-sub-lg-dropdown px-lg-2 py-lg-4 w-lg-200px">
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link"
+                                        href="tickets.php"
+                                        title="Check out over 200 in-house components, plugins and ready for use solutions"
+                                        data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click"
+                                        data-bs-placement="right">
+                                        <span class="menu-icon">
+                                        <i class="fa-solid fa-ticket-simple"></i>
+                                        </span>
+                                        <span class="menu-title">Tickets</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link" href="tickets-add.php" title="Check out the complete documentation"
+                                        data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click"
+                                        data-bs-placement="right">
+                                        <span class="menu-icon">
+                                        <i class="fa-solid fa-ticket-simple"></i>
+                                        </span>
+                                        <span class="menu-title">Tickets-add</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                            </div>
+                            <!--end:Menu sub-->
+                        </div>
+                        <!-- ******************************* end of ticket Pages *************************************-->
+
                     </div>
                     <!--end::Menu-->
                 </div>
