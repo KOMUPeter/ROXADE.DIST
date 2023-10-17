@@ -83,7 +83,7 @@ class Client {
 	}
 	
 
-	public function setCliadr($cliadr) {
+	public function setCliadr($cliadr): self {
 		$this->cliadr = $cliadr;
 		__QUERY('UPDATE clients SET cliadr = "'. __STRING($cliadr) . '" WHERE cliid = ' . $this->cliid);
 		return $this;

@@ -21,6 +21,7 @@ const GLOBAL_HTML_TITLE = "ROXADE | Support clients";
 
 setlocale(LC_TIME, "fr_FR");
 
+
 /*
  * Fonctions
  */
@@ -38,4 +39,5 @@ require_once('fpdf.php');
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+$application = new Application();
 ?>

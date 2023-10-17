@@ -123,6 +123,11 @@ class User
         return ($password);
     }
 
+    public function updateAdminStatus($useadmin){
+        __QUERY("UPDATE users SET useadmin = " . intval($useadmin) . " WHERE useid = " . intval($this->useid));
+    }
+    
+
     public function deleteUser()
     {
         __QUERY('DELETE FROM users WHERE useid=' . $this->useid);

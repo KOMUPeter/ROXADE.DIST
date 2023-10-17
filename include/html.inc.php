@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 	<!--begin::Head-->
 	<head>
@@ -28,8 +29,8 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
 		
 
-		<script defer src="javascript/defuse.js"></script>
+		<!-- <script defer src="javascript/defuse.js"></script> -->
 
-		<!--end::Global Stylesheets Bundle-->
-		<script>// Frame-busting to prevent site from being loaded within a frame without permission (click-jacking) if (window.top != window.self) { window.top.location.replace(window.self.location.href); }</script>
+		
 	</head>
+

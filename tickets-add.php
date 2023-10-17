@@ -2,6 +2,15 @@
 include 'config/config.inc.php';
 include 'config/login.inc.php';
 
+
+
+/*
+ *
+ * Cette page ne sera utilisé que par les clients (qui se connecteront avec les login / password des contacts
+ *
+ */
+
+/*
 $clientName = '';
 $clientAdr = "";
 $clientCp = "";
@@ -12,6 +21,7 @@ $clientEmail = "";
 $clientId = 0;
 
 if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['n']) && $_GET['n'] == 'edit') {
+    // $clientId = intval($_GET['id']);
     // Load user from database using ID
     $client = new Client();
     if ($client->LoadClientFromID($_GET['id'])) {
@@ -23,15 +33,35 @@ if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['n']) && $_GET[
         $clientUrl = $client->getCliurl();
         $clientTel = $client->getClitel();
         $clientEmail = $client->getCliemail();
-    
+
     } else {
-        $application->addToast('danger','Email','Client introuvable, veuillez vérifier l\'existence du client !');
+        echo "Client not found.";
         exit;
     }
-} 
+}
 
+*/
+$ticket = new Tickets();
 
-$titrePage = "Définition des clients";
+if (isset($_POST)) {
+    // Retrieve form data
+    $ticcli = $_POST['ticcli'];
+    $ticcct = $_POST['ticcct'];
+    $tictype = $_POST['tictype'];
+    $ticniveau = $_POST['ticniveau'];
+    $tictitre = $_POST['tictitre'];
+    $ticdescriptif = $_POST['ticdescriptif'];
+    $ticpec = $_POST['ticpec'];
+    $fichiers = $_FILES['fichiers']['name'];
+
+    // Call the function to add the ticket to the database
+    $ticid = addTickets($ticcli, $ticcct, $tictype, $ticniveau, $tictitre, $ticdescriptif, $ticpec, $fichiers);
+    
+    // Use the $ticid as needed
+    // Redirect or display a success message
+}
+
+$titrePage = "Création d'un ticket";
 error_reporting(E_ALL);
 
 include('include/html.inc.php')
@@ -82,7 +112,7 @@ include('include/html.inc.php')
                                     <!--begin::Title-->
                                     <h1
                                         class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
-                                        Définition des clients
+                                        Création d'un ticket
                                     </h1>
                                     <!--end::Title-->
 
@@ -103,8 +133,8 @@ include('include/html.inc.php')
 
                                         <!--begin::Item-->
                                         <li class="breadcrumb-item text-muted">
-                                            <a href="/defcli.php" class="text-muted text-hover-primary">
-                                                Liste des clients </a>
+                                            <a href="/tickets.php" class="text-muted text-hover-primary">
+                                                Tickets en cours </a>
                                         </li>
                                         <li class="breadcrumb-item">
                                             <span class="bullet bg-gray-400 w-5px h-2px"></span>
@@ -114,7 +144,7 @@ include('include/html.inc.php')
                                         <!--begin::Item-->
                                         <li class="breadcrumb-item text-muted">
                                                 <span>
-                                                    Nouveau client </span>
+                                                    Nouveau ticket </span>
                                         </li>
                                         <!--end::Item-->
 
@@ -137,90 +167,80 @@ include('include/html.inc.php')
                         <!--begin::Content-->
                         <div id="kt_app_content" class="app-content  flex-column-fluid ">
 
-
                             <!--begin::Content container-->
                             <div id="kt_app_content_container" class="app-container  container-fluid ">
-                                <form method="post" action="defcli.php">
-                                <?php
+                                <form method="post" action="tickets.php" enctype="multipart/form-data">
+                                    <?php
                                     randomToken();
                                     addToken();
                                     $n = isset($_GET['n']) ? $_GET['n'] : '';
                                     ?>
                                     <input type="hidden" name="action" value="<?= $n === "new" ? "add" : ($n === "edit" ? "edit" : "") ?>">
                                     <input type="hidden" name="id"
-                                        value="<?= isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : "0" ?>">
-                        
+                                           value="<?= isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : "0" ?>">
+
                                     <div class="mb-10">
-                                        <label class="form-label required">Nom</label>
-                                        <input type="text" class="form-control form-control-solid" maxlength="100" required name="nom"
-                                            placeholder="Nom du client" value="<?= $clientName ?>">
+                                        <label class="form-label required">Demande</label>
+                                        <select class="form-control" name="demande" required id="demandeSelect">
+                                            <option value="" selected>-- Sélectionnez --</option>
+                                            <option value="E">Demande d'évolution</option>
+                                            <option value="C">Correction d'un bug</option>
+                                        </select>
+                                    </div>
+                                    <!-- Ce div ne concerne que la demande d'évolution / Doit être caché et désactivé pour une correction de bug -->
+                                    <div class="mb-10 urgence">
+                                        <label class="form-label required">Urgence</label>
+                                        <select class="form-control" name="niveau" required>
+                                            <option value="" selected>-- Sélectionnez --</option>
+                                            <option value="3">Demande à traiter en urgence</option>
+                                            <option value="2">Demande importante</option>
+                                            <option value="1">Demande mineure</option>
+                                        </select>
+                                    </div>
+                                    <!-- Ce div ne concerne que la correction d'un bug / Doit être caché et désactivé pour une demande d'évolution -->
+                                    <div class="mb-10 niveau">
+                                        <label class="form-label required">Sévérité</label>
+                                        <select class="form-control" name="niveau" required>
+                                            <option value="" selected>-- Sélectionnez --</option>
+                                            <option value="3">Blocage en cours : correction impérative</option>
+                                            <option value="2">Dysfonctionnement : correction urgente</option>
+                                            <option value="1">Non bloquant : correction mineure</option>
+                                        </select>
                                     </div>
                                     <div class="mb-10">
-                                        <label class="form-label required">Adresse</label>
-                                        <textarea rows="3" class="form-control form-control-solid" required name="adresse"
-                                            placeholder="Adresse postale du client"><?= $clientAdr ?></textarea>
+                                        <label class="form-label required">Titre</label>
+                                        <input type="text" class="form-control form-control-solid" required name="titre">
                                     </div>
+                                    <!-- adapter le placeholder suivant si c'est une correction ou une demande -->
                                     <div class="mb-10">
-                                        <label class="form-label required">Code postal</label>
-                                        <input type="text" class="form-control form-control-solid" maxlength="9" required name="code-postal"
-                                            value="<?= $clientCp ?>" placeholder="Code postal du client">
+                                        <label class="form-label required">Descriptif</label>
+                                        <textarea rows="10" class="form-control form-control-solid" required name="descriptif"
+                                                  placeholder="Veuillez décrire ici votre demande [ou bug] de façon la plus détaillée possible."></textarea>
                                     </div>
-                                    <div class="mb-10">
-                                        <label class="form-label required">Ville</label>
-                                        <input type="text" class="form-control form-control-solid" maxlength="50" required name="ville"
-                                            value="<?= $clientVille ?>" placeholder="Ville du client">
-                                    </div>
-                                    <div class="mb-10">
-                                        <label class="form-label">Site web</label>
-                                        <input type="url" class="form-control form-control-solid" maxlength="200" name="site-web"
-                                            value="<?= $clientUrl ?>" placeholder="Adresse du site internet du client">
-                                    </div>
-                                    <div class="mb-10">
-                                        <label class="form-label">Téléphone</label>
-                                        <input type="text" class="form-control form-control-solid" maxlength="25" name="telephone"
-                                            value="<?= $clientTel ?>" placeholder="Téléphone du client">
-                                    </div>
-                                    <div class="mb-10">
-                                        <label class="form-label">Adresse Email</label>
-                                        <input type="email" class="form-control form-control-solid" maxlength="120" name="email"
-                                            value="<?= $clientEmail ?>" placeholder="Adresse email du client">
-                                    </div>
-                                    <div class="mb-10">
-                                        <label class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
-                                            <!--begin::Inputs-->
-                                            <input class="form-check-input" name="google" type="checkbox" value="1"
-                                                id="kt_modal_connected_accounts_google" checked="checked">
-                        
-                        
-                                            <!--end::Inputs-->
-                        
-                                            <!--begin::Label-->
-                                            <span class="form-check-label fw-semibold text-muted" for="kt_modal_connected_accounts_google">
-                                                Compte actif</span>
-                                            <!--end::Label-->
-                                        </label>
-                                    </div>
-                                    <h5>Contacts</h5>
                                     <?php
-                                    /*
-                                     * Afficher ici un <table> avec les contacts éventuels du client et la possibilité en ajax d'en ajouter
-                                     * Il faudra utiliser la fonction $.ajax de JQuery et créer des inputs hidden pour valider le formulaire
-                                     * avec les coordonnées du client + les coordonnées de X contacts...
-                                     */
+                                    for ($i = 1; $i <= 6; $i++) {
                                     ?>
+                                    <div class="mb-10">
+                                        <label class="form-label required">Pièce jointe #<?=$i ?></label>
+                                        <input type="file" class="file-custom" name="fichier<?=$i ?>">
+                                    </div>
+                                    <?php
+                                    }
+                                    ?>
+
                                     <div class="mb-10">
                                         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>
                                             Enregistrer</button>
-                                        <a href="defcli.php" class="btn btn-secondary">Annuler</a>
+                                        <a href="tickets.php" class="btn btn-secondary">Annuler</a>
                                     </div>
                                 </form>
-                        
+
                             </div>
                             <!--end::Content container-->
                         </div>
                         <!--end::Content-->
-                        
-                        </div>
+
+                    </div>
                     <!--end::Content wrapper-->
 
 
@@ -243,6 +263,35 @@ include('include/html.inc.php')
 
     <!--begin::Javascript-->
     <?php include('include/javascript.inc.php') ?>
+
+ <script>
+    $(document).ready(function () {
+        // Cache les divs "Urgence" et "Niveau" par défaut
+        $('.urgence, .niveau').hide();
+
+        // Surveille le changement de la sélection "Demande"
+        $('#demandeSelect').change(function () {
+            var demande = $(this).val();
+            if (demande === 'E') {
+                // Si la demande est une évolution, affiche la div "Urgence" et masque la div "Niveau"
+                $('.urgence').show();
+                $('.niveau').hide();
+                // Désactiver la validation pour le champ "Sévérité"
+                $('select[name="niveau"]').prop('required', false);
+            } else if (demande === 'C') {
+                // Si la demande est une correction de bug, masque la div "Urgence" et affiche la div "Niveau"
+                $('.urgence').hide();
+                $('.niveau').show();
+                // Activer la validation pour le champ "Sévérité"
+                $('select[name="niveau"]').prop('required', true);
+            } else {
+                // Si aucune sélection n'est faite, cache les deux divs et active la validation pour le champ "Sévérité"
+                $('.urgence, .niveau').hide();
+                $('select[name="niveau"]').prop('required', true);
+            }
+        });
+    });
+</script>
     <!--end::Javascript-->
 
 </body>
