@@ -32,7 +32,6 @@ class Application
      * Fin fonction Xavier
      */
 
-
 	public function getToaid()
 	{
 		return $this->toaid;

@@ -11,9 +11,35 @@ class ClientContacts {
     private $cctemail;
     private $cctpassword;
 
-    public function __construct() {
+    public function __construct($id=null) {
+		if ($id != null) $this->loadFromcctID($id);
+
+		$this->cctactive = 1;
 
     }
+
+	public function loadFromcctID($cctid)
+    {
+        if ($result = __FETCH("SELECT * FROM clients_contacts WHERE cctid = '{$cctid}'")) {
+            // Populate the clientContact object with data from the database
+            $this->cctid = $result['cctid'];
+			$this->cctactive = $result['cctactive'];
+            $this->cctcli = $result['cctcli'];
+            $this->cctcivilite = $result['cctcivilite'];
+            $this->cctprenom = $result['cctprenom'];
+            $this->cctnom = $result['cctnom'];
+            $this->cctfixe = $result['cctfixe'];
+            $this->cctportable = $result['cctportable'];
+            $this->cctemail = $result['cctemail'];
+            $this->cctpassword = $result['cctpassword'];
+
+            return true;
+        }
+
+        return false; // clientContact not found
+    }
+
+
 
 
 	public function getCctid() {

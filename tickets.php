@@ -7,10 +7,51 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-$titrePage = "Tickets en cours";
+if (isset($_POST) && isset($contactConnected)) { 
+    // $contact = new ClientContacts;
+    var_dump($_POST);
+    exit;
+    if (isset($_POST['demande']) && isset($_POST['niveau']) && isset($_POST['titre']) && isset($_POST['descriptif'])  ) {
+        $ticket = new Tickets();
+        $ticket->newRecord($contactConnected->getCctcli(),$contactConnected->getCctid(),$_POST['demande'],$_POST['niveau'],$_POST['titre'] ,$_POST['descriptif'] );
+
+        // chemin vers le dossier de sauvegarde de fichiers.
+        $uploadDirectory = '/assets/fichiers';
+        // on appelle les fichiers qui on été envoyé jusqu'a un maximum de 6
+        for ($i = 1; $i <= 6; $i++) {
+
+            // filename me sert a modifier le format des nom et de présentation , je souhaite donc uniformiser tout cela(id sera un variable prenant l'id du ticket liée)
+            $filename = 'fichier'. $i;
+
+            if (isset($_FILES[$filename]) && $_FILES[$filename]['error'] === UPLOAD_ERR_OK) {
+                // Vérifiez si le fichier a été correctement téléchargé
+                $originalName = $_FILES[$filename]['name'];
+                $targetFile = $uploadDirectory.$ticket->getTicid().'_'.$i;
+
+                // Déplace le fichier téléchargé vers  asses/fichiers .
+                if (move_uploaded_file($_FILES[$filename]['tmp_name'], $targetFile)) {
+                    __QUERY('INSERT INTO tickets_fichiers (tiftic , tifname , tiftype , tifsize)
+                    VALUES ('. $ticket->getTicid() .' "'. __STRING($_FILES[$filename]['name']) .'","'. __STRING($_FILES[$filename]['type']) .'", '.$_FILES[$filename]['size'].')');
+                    
+                } else {
+                    $application->addToast('danger', 'Envoie de fichiers', 'Un ou plusieurs de vos fichiers n\'ont pas pu être enregistré.');
+                }
+            }
+        }
+    }
+    header('location: tickets.php');
+    exit;
+}
+
+
+
+
+
+
 
 include 'include/html.inc.php';
 ?>
@@ -59,7 +100,7 @@ include 'include/html.inc.php';
                                         <!--begin::Title-->
                                         <h1
                                             class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
-                                            Définition des clients
+                                            Tickets en cours
                                         </h1>
                                         <!--end::Title-->
 

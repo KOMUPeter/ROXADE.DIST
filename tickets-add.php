@@ -41,27 +41,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['n']) && $_GET[
 }
 
 */
-$ticket = new Tickets();
 
-if (isset($_POST)) {
-    // Retrieve form data
-    $ticcli = $_POST['ticcli'];
-    $ticcct = $_POST['ticcct'];
-    $tictype = $_POST['tictype'];
-    $ticniveau = $_POST['ticniveau'];
-    $tictitre = $_POST['tictitre'];
-    $ticdescriptif = $_POST['ticdescriptif'];
-    $ticpec = $_POST['ticpec'];
-    $fichiers = $_FILES['fichiers']['name'];
-
-    // Call the function to add the ticket to the database
-    $ticid = addTickets($ticcli, $ticcct, $tictype, $ticniveau, $tictitre, $ticdescriptif, $ticpec, $fichiers);
-    
-    // Use the $ticid as needed
-    // Redirect or display a success message
-}
-
-$titrePage = "Création d'un ticket";
 error_reporting(E_ALL);
 
 include('include/html.inc.php')
@@ -175,15 +155,14 @@ include('include/html.inc.php')
                                     addToken();
                                     $n = isset($_GET['n']) ? $_GET['n'] : '';
                                     ?>
-                                    <input type="hidden" name="action" value="<?= $n === "new" ? "add" : ($n === "edit" ? "edit" : "") ?>">
-                                    <input type="hidden" name="id"
-                                           value="<?= isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : "0" ?>">
+                                    <input type="hidden" name="action" value="ticket">
+                                    <input type="hidden" name="id" value="<?=$_GET['id'] ?>">
 
                                     <div class="mb-10">
                                         <label class="form-label required">Demande</label>
                                         <select class="form-control" name="demande" required id="demandeSelect">
-                                            <option value="" selected>-- Sélectionnez --</option>
-                                            <option value="E">Demande d'évolution</option>
+                                            <option value="" >-- Sélectionnez --</option>
+                                            <option value="E" selected>Demande d'évolution</option>
                                             <option value="C">Correction d'un bug</option>
                                         </select>
                                     </div>
@@ -191,8 +170,8 @@ include('include/html.inc.php')
                                     <div class="mb-10 urgence">
                                         <label class="form-label required">Urgence</label>
                                         <select class="form-control" name="niveau" required>
-                                            <option value="" selected>-- Sélectionnez --</option>
-                                            <option value="3">Demande à traiter en urgence</option>
+                                            <option value="" >-- Sélectionnez --</option>
+                                            <option value="3" selected>Demande à traiter en urgence</option>
                                             <option value="2">Demande importante</option>
                                             <option value="1">Demande mineure</option>
                                         </select>
@@ -209,13 +188,13 @@ include('include/html.inc.php')
                                     </div>
                                     <div class="mb-10">
                                         <label class="form-label required">Titre</label>
-                                        <input type="text" class="form-control form-control-solid" required name="titre">
+                                        <input type="text" value="Essai titre" class="form-control form-control-solid" required name="titre">
                                     </div>
                                     <!-- adapter le placeholder suivant si c'est une correction ou une demande -->
                                     <div class="mb-10">
                                         <label class="form-label required">Descriptif</label>
                                         <textarea rows="10" class="form-control form-control-solid" required name="descriptif"
-                                                  placeholder="Veuillez décrire ici votre demande [ou bug] de façon la plus détaillée possible."></textarea>
+                                                  placeholder="Veuillez décrire ici votre demande [ou bug] de façon la plus détaillée possible.">Description</textarea>
                                     </div>
                                     <?php
                                     for ($i = 1; $i <= 6; $i++) {
@@ -276,13 +255,13 @@ include('include/html.inc.php')
                 // Si la demande est une évolution, affiche la div "Urgence" et masque la div "Niveau"
                 $('.urgence').show();
                 $('.niveau').hide();
-                // Désactiver la validation pour le champ "Sévérité"
+                // Désactive la validation pour le champ "Sévérité"
                 $('select[name="niveau"]').prop('required', false);
             } else if (demande === 'C') {
                 // Si la demande est une correction de bug, masque la div "Urgence" et affiche la div "Niveau"
                 $('.urgence').hide();
                 $('.niveau').show();
-                // Activer la validation pour le champ "Sévérité"
+                // Active validation pour le champ "Sévérité"
                 $('select[name="niveau"]').prop('required', true);
             } else {
                 // Si aucune sélection n'est faite, cache les deux divs et active la validation pour le champ "Sévérité"

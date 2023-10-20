@@ -12,8 +12,10 @@ class Client {
     private $cliemail;
 
 
-    public function __construct() {
+    public function __construct($id = null) {
 		$this->cliactive = 1;
+		if ($id != null) $this->loadClientFromID($id);
+
     }
 
 	//function to fetch client
