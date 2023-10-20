@@ -53,7 +53,7 @@ if (isset($_SESSION['toasts'])) {
 			<!-- mettre ici un div -->
 
 			<div class=" position-fixed top-0 end-0 p-3  toast show"  style="z-index: 11" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="5000">
-				<div class="toast-header  bg-<?= $toast['type']?>" >
+				<div class="toast-header bg-<?= $toast['type'] ?> d-flex justify-content-between">
 					<h5 class="mr-auto text-light ">
 						<?= $toast['titre'] ?>
 					</h5>

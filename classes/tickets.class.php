@@ -13,19 +13,20 @@ class Tickets {
     private $ticpecdt;
     private $ticpecuse;
 
-    public function __construct() {
-        // $this->ticniveau = 1;
-        $this->ticpec = 1;
-        $this->ticpecuse = 1;
+    public function __construct($id = null) {
+		$this->ticcli = 0;
+		$this->ticcct = 0;
+        $this->ticpec = 0;
+		$this->tictype = 'E';
+        if ($id != null) $this->loadFromID($id);
     }
 
-	public function newTicket($demande, $niveau , $titre , $descriptif)
+	public function newRecord($client,$contact,$demande, $niveau , $titre , $descriptif)
     {
-
-        __QUERY('INSERT INTO tickets (tictype, ticniveau , tictitre , ticdescriptif ) VALUES ("' . __STRING($demande) . '","' . __STRING($niveau) . '","' . __STRING($titre) . '","' . __STRING($descriptif) . '")');
+        __QUERY('INSERT INTO tickets (ticcli,ticcct,tictype, ticniveau , tictitre , ticdescriptif ) VALUES ('.(int)$client.','.(int)$contact.',"' . __STRING($demande) . '","' . __STRING($niveau) . '","' . __STRING($titre) . '","' . __STRING($descriptif) . '")');
         $this->loadFromID(__INSERT_ID());
-
     }
+
 
 	public function loadFromID($ticid)
     {
@@ -50,8 +51,6 @@ class Tickets {
         return false; // ticket not found
     }
 
-	
-    
 
 	public function getTicid() {
 		return $this->ticid;
@@ -64,6 +63,11 @@ class Tickets {
 
 	public function getTiccli() {
 		return $this->ticcli;
+	}
+
+	public function getClientNom(){
+		$client = new Client($this->ticcli);
+		return ($client->getClinom());
 	}
 	
 	public function setTiccli($ticcli): self {
@@ -80,6 +84,10 @@ class Tickets {
 		return $this;
 	}
 
+	public function getContactNom(){
+		$contact = new ClientContacts($this->ticcct);
+		return ($contact->getCctprenom().' '.$contact->getCctnom());
+	}
 	public function getTicdt() {
 		return $this->ticdt;
 	}
@@ -150,5 +158,23 @@ class Tickets {
 	public function setTicpecuse($ticpecuse): self {
 		$this->ticpecuse = $ticpecuse;
 		return $this;
+	}
+
+	public function getBadgeType() {
+		if ($this->tictype == 'E') {
+			return ('<div class="badge badge-primary">EVO</div>');
+		}
+		if ($this->tictype == 'B') {
+			return ('<div class="badge badge-danger">BUG</div>');
+		}
+	}
+
+	public function getBagdeNiveau() {
+		$s = '<div class="badge badge-';
+		if ($this->ticniveau == 1) $s .= "primary";
+		if ($this->ticniveau == 2) $s .= "warning";
+		if ($this->ticniveau == 3) $s .= "danger";
+		$s .= '">'.$this->ticniveau.'</div>';
+		return ($s);
 	}
 }

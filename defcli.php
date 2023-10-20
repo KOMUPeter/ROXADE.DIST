@@ -28,6 +28,8 @@ if (isset($_GET['action'])) {
             if ($client->getCliid()) {
                 $client->deleteClient();
             }
+            $application->addToast('danger','Email','Client supprimé de la base de données.');
+
         }
     }
 
@@ -51,14 +53,13 @@ if (isset($_POST['action'])) {
         $client->newClientRecord();
         $client->setClinom($clinom);
 
-        
-        
+        $application->addToast('success','Email','Nouveau client ajouté avec succès.');
+
     }
     if ($_POST['action'] == 'edit') {
         if (!$client->loadClientFromID($_POST['id'])) {
             // Handle the case when the client is not found.
         }
-       
         
     }
 
@@ -69,11 +70,14 @@ if (isset($_POST['action'])) {
     $client->setClitel($clitel);
     $client->setCliemail($cliemail);
 
+    $application->addToast('success','Email','Client modifié avec succès.');
+
     
     
     header('Location: defcli.php');
     exit;
 
+    
     /*
     if ($_POST['action'] == 'add') {
 

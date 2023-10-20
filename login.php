@@ -95,7 +95,7 @@ include('config/config.inc.php');
 							</div>
 							<!--begin::Heading-->
 							<!--begin::Input group=-->
-							<div class="fv-row mb-8">
+							<div class="fv-row mb-5">
 								<!--begin::Email-->
 								<input type="email" required placeholder="Email" name="email" maxlength="120"
 									autocomplete="off" class="form-control bg-transparent" />
@@ -112,23 +112,25 @@ include('config/config.inc.php');
 									<i class="bi bi-eye-slash"></i>
 								</button>
 							</div>
-
 							<!--end::Password-->
+							<div class="d-grid">
+								<button type="submit" id="kt_sign_in_submit" class="btn btn-primary form-group mt-5 ">
+									<!--begin::Indicator label-->
+									<span class="indicator-label">se connecter</span>
+									<!--end::Indicator label-->
+									<!--begin::Indicator progress-->
+									<span class="indicator-progress">
+										<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+									<!--end::Indicator progress-->
+								</button>
+							</div>
+
+							
 					</div>
 					<!--end::Input group=-->
 
 					<!--begin::Submit button-->
-					<div class="d-grid">
-						<button type="submit" id="kt_sign_in_submit" class="btn btn-primary">
-							<!--begin::Indicator label-->
-							<span class="indicator-label">se connecter</span>
-							<!--end::Indicator label-->
-							<!--begin::Indicator progress-->
-							<span class="indicator-progress">
-								<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
-							<!--end::Indicator progress-->
-						</button>
-					</div>
+
 					<!--end::Submit button-->
 					</form>
 					<!--end::Form-->

@@ -1,11 +1,11 @@
 <!--begin::Head-->
-<?php 
-include 'config/config.inc.php'; 
-include 'config/login.inc.php'; 
-?>
 <?php
-include('include/html.inc.php') 
-?>
+include 'config/config.inc.php';
+include 'config/login.inc.php';
+
+
+include('include/html.inc.php')
+	?>
 <!--end::Head-->
 
 <!--begin::Body-->
@@ -26,16 +26,95 @@ include('include/html.inc.php')
 
 			<!--begin::wrapper-->
 			<div class="app-wrapper d-flex" id="kt_app_wrapper">
-			<!--begin::wrapper container-->
-			<div class="app-container container-fluid d-flex">
-			<!--begin::Sidebar-->
-			<?php include('include/sidebar.inc.php') ?>
-			<!--end::Sidebar-->
+				<!--begin::wrapper container-->
+				<div class="app-container container-fluid d-flex">
+					<!--begin::Sidebar-->
+					<?php include('include/sidebar.inc.php') ?>
+					<!--end::Sidebar-->
 
-						<!--begin::Main-->
-						<!--end:::Main-->
+					<!--begin::Main-->
+					<div class="container">
+						<div class="row">
+							<div id="kt_app_content" class="app-content flex-column-fluid">
 
-			</div>
+								<div id="kt_app_content" class="app-content  flex-column-fluid ">
+									<!--begin::Content container-->
+									<div id="kt_app_content_container" class="app-container  container-fluid ">
+										
+										<?php
+										if (isset($userConnected)) {
+											$sql = __QUERY('SELECT ticid FROM tickets WHERE ticpec = 0');
+											if (__ROWS($sql) > 0) {
+												?>
+												<h3>Liste des tickets non pris en charge</h3>
+												<table class="table table-bordered table-striped table-hover">
+													<thead>
+														<tr>
+															<th class="text-center">
+																Type
+															</th>
+															<th>
+																Niveau
+															</th>
+															<th>
+																Client
+															</th>
+															<th>
+																Titre
+															</th>
+															<th>
+																Descriptif
+															</th>
+														</tr>
+													</thead>
+
+													<tbody>
+
+														<?php while ($row = __ARRAY($sql)) { 
+															$ticket = new Tickets($row['ticid']);
+
+															?>
+															<tr>
+																<td class="text-center">
+																	<?= $ticket->getBadgeType() ?>
+																</td>
+																<td class="font-weight-bold text-center">
+																<?= $ticket->getBagdeNiveau() ?>
+																</td>
+																<td class="text-nowrap">
+																	<div><a href="client.php?n=<?= $ticket->getTiccli() ?>"><?= $ticket->getClientNom() ?></a></div>
+																	<div class="text-muted"><?= $ticket->getContactNom() ?></div>
+																</td>
+																<td>
+																	<?= $ticket->getTictitre() ?>
+																</td>
+																<td>
+																	<?= nl2br($ticket->getTicdescriptif());?>
+																</td>
+															</tr>
+														<?php
+														}
+														?>
+													</tbody>
+												</table>
+
+												<?php
+											}
+										}
+										?>
+
+									</div>
+									<!--end::Content container-->
+								</div>
+
+
+								<!-- Your content goes here -->
+							</div>
+						</div>
+					</div>
+					<!--end:::Main-->
+
+				</div>
 
 			</div>
 			<!--end::Wrapper-->
