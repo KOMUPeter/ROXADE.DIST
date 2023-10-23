@@ -2,13 +2,10 @@
 include 'config/config.inc.php';
 include 'config/login.inc.php';
 
-
-
-/*
- *
- * Cette page ne sera utilisé que par les clients (qui se connecteront avec les login / password des contacts
- *
- */
+if (!isset($_GET['c']) || !isset($_GET['n'])) {
+    header('location: defcli.php');
+    exit;
+}
 
 /*
 $clientName = '';
@@ -21,7 +18,6 @@ $clientEmail = "";
 $clientId = 0;
 
 if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['n']) && $_GET['n'] == 'edit') {
-    // $clientId = intval($_GET['id']);
     // Load user from database using ID
     $client = new Client();
     if ($client->LoadClientFromID($_GET['id'])) {
@@ -35,14 +31,12 @@ if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['n']) && $_GET[
         $clientEmail = $client->getCliemail();
 
     } else {
-        echo "Client not found.";
+        $application->addToast('danger','Email','Client introuvable, veuillez vérifier l\'existence du client !');
         exit;
     }
 }
-
 */
 
-error_reporting(E_ALL);
 
 include('include/html.inc.php')
 ?>
@@ -92,7 +86,7 @@ include('include/html.inc.php')
                                     <!--begin::Title-->
                                     <h1
                                         class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
-                                        Création d'un ticket
+                                        Nouveau contact / modifier un contact
                                     </h1>
                                     <!--end::Title-->
 
@@ -113,8 +107,8 @@ include('include/html.inc.php')
 
                                         <!--begin::Item-->
                                         <li class="breadcrumb-item text-muted">
-                                            <a href="/tickets.php" class="text-muted text-hover-primary">
-                                                Tickets en cours </a>
+                                            <a href="/defcli-add.php?n=[id du client]" class="text-muted text-hover-primary">
+                                                [nom du client] </a>
                                         </li>
                                         <li class="breadcrumb-item">
                                             <span class="bullet bg-gray-400 w-5px h-2px"></span>
@@ -124,7 +118,7 @@ include('include/html.inc.php')
                                         <!--begin::Item-->
                                         <li class="breadcrumb-item text-muted">
                                                 <span>
-                                                    Nouveau ticket </span>
+                                                    Nouveau contact / Modifier un contact </span>
                                         </li>
                                         <!--end::Item-->
 
@@ -147,69 +141,71 @@ include('include/html.inc.php')
                         <!--begin::Content-->
                         <div id="kt_app_content" class="app-content  flex-column-fluid ">
 
+
                             <!--begin::Content container-->
                             <div id="kt_app_content_container" class="app-container  container-fluid ">
-                                <form method="post" action="tickets.php" enctype="multipart/form-data">
+                                <form method="post" action="defcli.php">
                                     <?php
                                     randomToken();
                                     addToken();
                                     ?>
-                                    <input type="hidden" name="action" value="ticket">
+                                    <input type="hidden" name="action" value="contact">
                                     <input type="hidden" name="id" value="<?=$_GET['n'] ?>">
+                                    <input type="hidden" name="client" value="<?=$_GET['c'] ?>">
 
                                     <div class="mb-10">
-                                        <label class="form-label required">Demande</label>
-                                        <select class="form-control" name="demande" required id="demandeSelect">
-                                            <option value="" >-- Sélectionnez --</option>
-                                            <option value="E" selected>Demande d'évolution</option>
-                                            <option value="C">Correction d'un bug</option>
-                                        </select>
-                                    </div>
-                                    <!-- Ce div ne concerne que la demande d'évolution / Doit être caché et désactivé pour une correction de bug -->
-                                    <div class="mb-10 urgence">
-                                        <label class="form-label required">Urgence</label>
-                                        <select class="form-control" name="niveau" required>
-                                            <option value="" >-- Sélectionnez --</option>
-                                            <option value="3" selected>Demande à traiter en urgence</option>
-                                            <option value="2">Demande importante</option>
-                                            <option value="1">Demande mineure</option>
-                                        </select>
-                                    </div>
-                                    <!-- Ce div ne concerne que la correction d'un bug / Doit être caché et désactivé pour une demande d'évolution -->
-                                    <div class="mb-10 niveau">
-                                        <label class="form-label required">Sévérité</label>
-                                        <select class="form-control" name="niveau" required>
-                                            <option value="" selected>-- Sélectionnez --</option>
-                                            <option value="3">Blocage en cours : correction impérative</option>
-                                            <option value="2">Dysfonctionnement : correction urgente</option>
-                                            <option value="1">Non bloquant : correction mineure</option>
+                                        <label class="form-label required">Civilité</label>
+                                        <select class="form-control form-control-solid" required name="civilite">
+                                            <option value="" selected>-- Sélectionnez --></option>
+                                            <option value="M.">Monsieur</option>
+                                            <option value="Mme">Madame</option>
                                         </select>
                                     </div>
                                     <div class="mb-10">
-                                        <label class="form-label required">Titre</label>
-                                        <input type="text" value="Essai titre" class="form-control form-control-solid" required name="titre">
+                                        <label class="form-label required">Prénom</label>
+                                        <input type="text" class="form-control form-control-solid" maxlength="35" required name="prenom"
+                                               placeholder="Prénom du contact" value="<?= $contactPrenom ?>">
                                     </div>
-                                    <!-- adapter le placeholder suivant si c'est une correction ou une demande -->
                                     <div class="mb-10">
-                                        <label class="form-label required">Descriptif</label>
-                                        <textarea rows="10" class="form-control form-control-solid" required name="descriptif"
-                                                  placeholder="Veuillez décrire ici votre demande [ou bug] de façon la plus détaillée possible.">Description</textarea>
+                                        <label class="form-label required">Nom</label>
+                                        <input type="text" class="form-control form-control-solid" maxlength="50" required name="nom"
+                                               placeholder="Nom du contact" value="<?= $contactName ?>">
                                     </div>
-                                    <?php
-                                    for ($i = 1; $i <= 6; $i++) {
-                                    ?>
                                     <div class="mb-10">
-                                        <label class="form-label required">Pièce jointe #<?=$i ?></label>
-                                        <input type="file" class="file-custom" name="fichier<?=$i ?>">
+                                        <label class="form-label">Téléphone fixe</label>
+                                        <input type="text" class="form-control form-control-solid" maxlength="25" name="tel-fixe"
+                                               value="<?= $contactFixe ?>" placeholder="N° de téléphone fixe">
                                     </div>
-                                    <?php
-                                    }
-                                    ?>
+                                    <div class="mb-10">
+                                        <label class="form-label">Téléphone portable</label>
+                                        <input type="text" class="form-control form-control-solid" maxlength="25" name="tel-portable"
+                                               value="<?= $contactPortable ?>" placeholder="N° de téléphone portable">
+                                    </div>
+                                    <div class="mb-10">
+                                        <label class="form-label required">Adresse Email</label>
+                                        <input type="email" class="form-control form-control-solid" required maxlength="120" name="email"
+                                               value="<?= $contactEmail ?>" placeholder="Adresse email du contact">
+                                    </div>
+                                    <div class="mb-10">
+                                        <label class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
+                                            <!--begin::Inputs-->
+                                            <input class="form-check-input" name="actif" type="checkbox" value="1"
+                                                   id="kt_modal_connected_accounts_google" checked="checked">
+
+
+                                            <!--end::Inputs-->
+
+                                            <!--begin::Label-->
+                                            <span class="form-check-label fw-semibold text-muted" for="kt_modal_connected_accounts_google">
+                                                Compte actif</span>
+                                            <!--end::Label-->
+                                        </label>
+                                    </div>
 
                                     <div class="mb-10">
                                         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>
                                             Enregistrer</button>
-                                        <a href="tickets.php" class="btn btn-secondary">Annuler</a>
+                                        <a href="defcli-add.php?n=<?=$_GET['c'] ?>" class="btn btn-secondary">Annuler</a>
                                     </div>
                                 </form>
 
@@ -241,35 +237,6 @@ include('include/html.inc.php')
 
     <!--begin::Javascript-->
     <?php include('include/javascript.inc.php') ?>
-
- <script>
-    $(document).ready(function () {
-        // Cache les divs "Urgence" et "Niveau" par défaut
-        $('.urgence, .niveau').hide();
-
-        // Surveille le changement de la sélection "Demande"
-        $('#demandeSelect').change(function () {
-            var demande = $(this).val();
-            if (demande === 'E') {
-                // Si la demande est une évolution, affiche la div "Urgence" et masque la div "Niveau"
-                $('.urgence').show();
-                $('.niveau').hide();
-                // Désactive la validation pour le champ "Sévérité"
-                $('select[name="niveau"]').prop('required', false);
-            } else if (demande === 'C') {
-                // Si la demande est une correction de bug, masque la div "Urgence" et affiche la div "Niveau"
-                $('.urgence').hide();
-                $('.niveau').show();
-                // Active validation pour le champ "Sévérité"
-                $('select[name="niveau"]').prop('required', true);
-            } else {
-                // Si aucune sélection n'est faite, cache les deux divs et active la validation pour le champ "Sévérité"
-                $('.urgence, .niveau').hide();
-                $('select[name="niveau"]').prop('required', true);
-            }
-        });
-    });
-</script>
     <!--end::Javascript-->
 
 </body>

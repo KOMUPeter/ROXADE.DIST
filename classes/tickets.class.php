@@ -177,4 +177,13 @@ class Tickets {
 		$s .= '">'.$this->ticniveau.'</div>';
 		return ($s);
 	}
+
+	public function getIconePEC() {
+		if ($this->ticpec == 0 ) {
+			return ('<i class="fa fa-hourglass text-warning"></i>');
+		}
+		if ($this->ticpec == 1) {
+			return ('<i class="fa fa-check-circle text-success"></i>');
+		}
+	}
 }

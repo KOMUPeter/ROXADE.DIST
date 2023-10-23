@@ -11,10 +11,8 @@ error_reporting(E_ALL);
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-if (isset($_POST) && isset($contactConnected)) { 
-    // $contact = new ClientContacts;
-    var_dump($_POST);
-    exit;
+if (isset($_POST['action']) && isset($contactConnected)) { 
+
     if (isset($_POST['demande']) && isset($_POST['niveau']) && isset($_POST['titre']) && isset($_POST['descriptif'])  ) {
         $ticket = new Tickets();
         $ticket->newRecord($contactConnected->getCctcli(),$contactConnected->getCctid(),$_POST['demande'],$_POST['niveau'],$_POST['titre'] ,$_POST['descriptif'] );
@@ -43,7 +41,7 @@ if (isset($_POST) && isset($contactConnected)) {
             }
         }
     }
-    header('location: tickets.php');
+    header('location: index.php');
     exit;
 }
 
@@ -139,7 +137,78 @@ include 'include/html.inc.php';
                                 <!--begin::Content container-->
                                 <div id="kt_app_content_container" class="app-container  container-fluid ">
 
+                                <?php 
+                                        if (isset($userConnected)) {
+                                        $result = __QUERY("SELECT ticid FROM tickets");
+                                        
+                                        if (__ROWS($result) > 0) { ?>
                                     <table class="table table-bordered table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">
+                                                    Type
+                                                </th>
+                                                <th>
+                                                    Niveau
+                                                </th>
+                                                <th>
+                                                    Client
+                                                </th>
+                                                <th>
+                                                    Titre
+                                                </th>
+                                                <th>
+                                                    Descriptif
+                                                </th>
+                                                <th>
+                                                    Prise en charge
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                            <tbody>
+                                                <?php
+                                                while ($row = __ARRAY($result)) { 
+                                                    $ticket = new Tickets($row['ticid']);
+                                                    ?>
+                                                    
+                                                    <tr>
+															<td class="text-center">
+																	<?= $ticket->getBadgeType() ?>
+																</td>
+																<td class="font-weight-bold text-center">
+																<?= $ticket->getBagdeNiveau() ?>
+																</td>
+																<td class="text-nowrap">
+																	<div><a href="client.php?n=<?= $ticket->getTiccli() ?>"><?= $ticket->getClientNom() ?></a></div>
+																	<div class="text-muted"><?= $ticket->getContactNom() ?></div>
+																</td>
+																<td>
+																	<?= $ticket->getTictitre() ?>
+																</td>
+																<td>
+																	<?= nl2br($ticket->getTicdescriptif());?>
+																</td>
+                                                                <td class="text-center" >
+                                                            <?= $ticket->getIconePEC() ?>
+                                                                </td>
+															</tr>
+                                                    </tr>
+                                                <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    <?php 
+                                        } 
+                                    ?>
+                                    <?php 
+                                    } 
+                                    ?>
+
+                                        <?php 
+                                        if (isset($clientConnected)) {
+                                        $result = __QUERY('SELECT ticid FROM tickets WHERE ticcli = ' . $clientConnected->getTiccli());
+                                        
+                                        if (__ROWS($result) > 0) { ?>
+                                        <table class="table table-bordered table-striped table-hover">
                                         <thead>
                                             <tr>
                                                 <th class="text-center">
@@ -159,44 +228,40 @@ include 'include/html.inc.php';
                                                 </th>
                                             </tr>
                                         </thead>
-                                        <?php $result = __QUERY("SELECT * FROM tickets");
-                                        if (__ROWS($result) > 0) { ?>
-                                            <tbody>
-
-                                                <?php while ($row = __ARRAY($result)) { ?>
+                                        <tbody>
+                                                <?php
+                                                while ($row = __ARRAY($result)) { 
+                                                    $ticket = new Tickets($row['ticid']);
+                                                    ?>
+                                                    
                                                     <tr>
-                                                        <td class="text-center">
-                                                            <?php echo $row['tictype']; ?>
-                                                        </td>
-                                                        <td class="font-weight-bold text-center">
-                                                            <?php
-                                                            if ($row['ticniveau'] == 1) {
-                                                                echo '<h4 class="text-primary">';
-                                                                echo $row['ticniveau'];
-                                                            } elseif ($row['ticniveau'] == 2) {
-                                                                echo '<h4 class="text-warning">';
-                                                                echo $row['ticniveau'];
-                                                            } elseif ($row['ticniveau'] == 3) {
-                                                                echo '<h4 class="text-danger">';
-                                                                echo $row['ticniveau'];
-                                                            }
-                                                            ?>
-
-                                                        </td>
-                                                        <td>
-                                                            <?php echo $row['tictitre']; ?>
-                                                        </td>
-                                                        <td>
-                                                            <?php echo $row['ticdescriptif']; ?>
-                                                        </td>
-                                                        <td>
-                                                            <?php echo $row['ticpec']; ?>
+															<td class="text-center">
+																	<?= $ticket->getBadgeType() ?>
+																</td>
+																<td class="font-weight-bold text-center">
+																<?= $ticket->getBagdeNiveau() ?>
+																</td>
+																<td>
+																	<?= $ticket->getTictitre() ?>
+																</td>
+																<td>
+																	<?= nl2br($ticket->getTicdescriptif());?>
+																</td>
+															</tr>
+                                                        <td class="text-center" >
+                                                            <?= $ticket->getIconePEC() ?>
                                                         </td>
                                                     </tr>
-                                                <?php } ?>
+                                                <?php
+                                                } 
+                                             ?>
                                             </tbody>
                                         </table>
-                                    <?php } ?>
+                                    <?php 
+                                        } 
+           
+                                    } 
+                                    ?>
                                 </div>
                                 <!--end::Content container-->
                             </div>

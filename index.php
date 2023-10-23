@@ -40,7 +40,7 @@ include('include/html.inc.php')
 								<div id="kt_app_content" class="app-content  flex-column-fluid ">
 									<!--begin::Content container-->
 									<div id="kt_app_content_container" class="app-container  container-fluid ">
-										
+
 										<?php
 										if (isset($userConnected)) {
 											$sql = __QUERY('SELECT ticid FROM tickets WHERE ticpec = 0');
@@ -70,7 +70,7 @@ include('include/html.inc.php')
 
 													<tbody>
 
-														<?php while ($row = __ARRAY($sql)) { 
+														<?php while ($row = __ARRAY($sql)) {
 															$ticket = new Tickets($row['ticid']);
 
 															?>
@@ -79,20 +79,24 @@ include('include/html.inc.php')
 																	<?= $ticket->getBadgeType() ?>
 																</td>
 																<td class="font-weight-bold text-center">
-																<?= $ticket->getBagdeNiveau() ?>
+																	<?= $ticket->getBagdeNiveau() ?>
 																</td>
 																<td class="text-nowrap">
-																	<div><a href="client.php?n=<?= $ticket->getTiccli() ?>"><?= $ticket->getClientNom() ?></a></div>
-																	<div class="text-muted"><?= $ticket->getContactNom() ?></div>
+																	<div><a href="client.php?n=<?= $ticket->getTiccli() ?>">
+																			<?= $ticket->getClientNom() ?>
+																		</a></div>
+																	<div class="text-muted">
+																		<?= $ticket->getContactNom() ?>
+																	</div>
 																</td>
 																<td>
 																	<?= $ticket->getTictitre() ?>
 																</td>
 																<td>
-																	<?= nl2br($ticket->getTicdescriptif());?>
+																	<?= nl2br($ticket->getTicdescriptif()); ?>
 																</td>
 															</tr>
-														<?php
+															<?php
 														}
 														?>
 													</tbody>
@@ -102,7 +106,57 @@ include('include/html.inc.php')
 											}
 										}
 										?>
+										<?php
+										if (isset($clientConnected)) {
+											$result = __QUERY('SELECT ticid FROM tickets WHERE ticcli = ' . $clientConnected->getTiccli());
 
+											if (__ROWS($result) > 0) { ?>
+												<table class="table table-bordered table-striped table-hover">
+													<thead>
+														<tr>
+															<th class="text-center">
+																Type
+															</th>
+															<th>
+																Niveau
+															</th>
+															<th>
+																Titre
+															</th>
+															<th>
+																Descriptif
+															</th>
+														</tr>
+													</thead>
+													<tbody>
+														<?php
+														while ($row = __ARRAY($result)) {
+															$ticket = new Tickets($row['ticid']);
+															?>
+
+															<tr>
+																<td class="text-center">
+																	<?= $ticket->getBadgeType() ?>
+																</td>
+																<td class="font-weight-bold text-center">
+																	<?= $ticket->getBagdeNiveau() ?>
+																</td>
+																<td>
+																	<?= $ticket->getTictitre() ?>
+																</td>
+																<td>
+																	<?= nl2br($ticket->getTicdescriptif()); ?>
+																</td>
+															</tr>
+															<?php
+															}
+														?>
+													</tbody>
+												</table>
+											<?php
+											}
+										}
+										?>
 									</div>
 									<!--end::Content container-->
 								</div>
