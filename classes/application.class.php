@@ -9,15 +9,10 @@ class Application
 
 	public function __construct()
 	{
-        /*
-         * Initialisation de la variable de session pour la gestion des toasts
-         */
+    
         if (!isset($_SESSION['toasts'])) $_SESSION['toasts'] = array();
 	}
 
-    /*
-     * Fonctions Xavier
-     */
     public function addToast($type, $titre, $message)
     {
         $_SESSION['toasts'][] = array(
@@ -27,10 +22,6 @@ class Application
         );
     }
 
-    
-    /*
-     * Fin fonction Xavier
-     */
 
 	public function getToaid()
 	{

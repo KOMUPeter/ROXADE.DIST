@@ -25,8 +25,8 @@ include 'include/html.inc.php';
             <!--end::Mobile toggle-->
             <!--begin::Logo image-->
             <a href="../../demo44/dist/index.html">
-                <img id="logo-image" alt="Logo" src="assets/media/logos/custom-1.png"
-                    class="h-50px logo-image theme-light-show" />
+                <img alt="Logo" src="assets/media/logos/custom-1.png" class="h-50px logo-image theme-light-show" />
+                <img alt="Logo" src="assets/media/logos/custom-1.png" class="h-50px logo-image theme-dark-show" />
             </a>
             <!--end::Logo image-->
         </div>
@@ -585,24 +585,15 @@ include 'include/html.inc.php';
             <!--end::Menu wrapper-->
             <!--begin::Navbar-->
             <div class="app-navbar flex-shrink-0">
+
                 <!--begin::User menu-->
                 <div class="app-navbar-item ms-1 ms-lg-4" id="kt_header_user_menu_toggle">
                     <!--begin::Menu wrapper-->
                     <div class="cursor-pointer symbol symbol-35px symbol-md-40px"
                         data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent"
                         data-kt-menu-placement="bottom-end">
-                        <?php
-                        if (isset($userConnected)) { ?>
-                            <img id="user-image" class="mode-image symbol symbol-35px symbol-md-40px"
-                                src="../assets/media/avatars/icon-user.png" alt="user" />
-                            <?php
-                        } else {
-                            ?>
-                            <img class="symbol symbol-35px symbol-md-40px" src="../assets/media/avatars/300-30.jpg"
-                                alt="user" />
-                            <?php
-                        }
-                        ?>
+                        <img class="symbol symbol-35px symbol-md-40px" src="assets/media/avatars/300-5.jpg"
+                            alt="user" />
                     </div>
                     <!--begin::User account menu-->
                     <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-color fw-semibold py-4 fs-6 w-275px"
@@ -612,48 +603,38 @@ include 'include/html.inc.php';
                             <div class="menu-content d-flex align-items-center px-3">
                                 <!--begin::Avatar-->
                                 <div class="symbol symbol-50px me-5">
-                                <?php
-                                    if (isset($userConnected)) { ?>
-                                        <img id="user-image" alt="Logo" src="assets/media/avatars/icon-user.png" />
-                                    <?php } else {
-                                        ?>
-                                        <img alt="Logo" src="assets/media/avatars/300-30.jpg" />
-                                    <?php } ?>
+                                    <img alt="Logo" src="assets/media/avatars/300-5.jpg" />
                                 </div>
                                 <!--end::Avatar-->
                                 <!--begin::Username-->
                                 <div class="d-flex flex-column">
                                     <div class="fw-bold d-flex align-items-center fs-5">
-                                    <?php
-                                        if (isset($userConnected) ) {
-                                            echo $userConnected->getUsenom();
-                                        } 
-                                        
-                                        if (isset($clientConnected)) {
-                                            var_dump('ok');
-                                            echo $clientConnected->getCctprenom();
-                                        }
-                                        ?>
-                                    
-                                        <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">
                                         <?php
+                                        if (isset($userConnected)) {
+                                            // var_dump($userConnected);
+                                            echo $userConnected->getUsenom();
+                                        } elseif (isset($clientConnected)) {
+                                            echo $clientConnected->getCctnom();
+                                        } ?>
+
+                                        <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">
+                                            <?php
                                             if (isset($userConnected)) {
                                                 echo 'Roxade';
-                                            } elseif (isset($clientConnected)) {
+                                            } elseif(isset($clientConnected)) {
                                                 echo 'Client';
                                             }
                                             ?>
+
                                         </span>
                                     </div>
                                     <a href="#" class="fw-semibold text-muted text-hover-primary fs-7">
                                     <?php
-                                        if (isset($userConnected)) {
+                                        if(isset($userConnected)){
                                             echo $userConnected->getUselogin();
-                                        } elseif (isset($clientConnected)) {
+                                        } elseif(isset($clientConnected)){
                                             echo $clientConnected->getCctemail();
-                                           
                                         }
-                                        
                                         ?>
                                     </a>
                                 </div>
@@ -670,6 +651,7 @@ include 'include/html.inc.php';
                         </div>
                         <!--end::Menu item-->
                         <!--begin::Menu item-->
+                        <?php if(isset($clientConnected)) {  ?>
                         <div class="menu-item px-5">
                             <a href="../../demo44/dist/apps/projects/list.html" class="menu-link px-5">
                                 <span class="menu-text">Mes Tickets</span>
@@ -678,12 +660,16 @@ include 'include/html.inc.php';
                                 </span>
                             </a>
                         </div>
+                        <?php 
+                            } 
+                        ?>
+                        <?php if(isset($userConnected)) {  ?>
                         <!--end::Menu item-->
                         <!--begin::Menu item-->
                         <div class="menu-item px-5" data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
                             data-kt-menu-placement="left-start" data-kt-menu-offset="-15px, 0">
                             <a href="#" class="menu-link px-5">
-                                <span class="menu-title">Gérer tickets</span>
+                                <span class="menu-title">Gérer tickets </span>
                                 <span class="menu-arrow"></span>
                             </a>
                             <!--begin::Menu sub-->
@@ -691,8 +677,7 @@ include 'include/html.inc.php';
                                 <!--begin::Menu item-->
                                 <div class="menu-item px-3">
                                     <a href="../../demo44/dist/account/referrals.html"
-                                        class="menu-link px-5">En cours
-                                            de traitement</a>
+                                    class="menu-link px-5">En cours de traitement</a>
                                 </div>
                                 <!--end::Menu item-->
                                 <!--begin::Menu item-->
@@ -706,73 +691,78 @@ include 'include/html.inc.php';
                                         class="menu-link px-5">Historique</a>
                                 </div>
                                 <!--end::Menu item-->
-                            
+                                <?php 
+                                } 
+                                ?>
+                                <!--begin::Menu separator-->
+                                <div class="separator my-2"></div>
+                                <!--end::Menu separator-->
+                                <!--begin::Menu item-->
+                                
                             </div>
                             <!--end::Menu sub-->
                         </div>
                         <!--end::Menu item-->
-                        
                         <!--begin::Menu separator-->
                         <div class="separator my-2"></div>
                         <!--end::Menu separator-->
                         <!--begin::Menu item-->
-                         <!--begin::Menu item-->
-                    <div class="menu-item px-5" data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
-                        data-kt-menu-placement="left-start" data-kt-menu-offset="-15px, 0">
-                        <a href="#" class="menu-link px-5">
-                            <span class="menu-title position-relative">Mode
-                                <span class="ms-5 position-absolute translate-middle-y top-50 end-0">
-                                    <i class="ki-outline ki-night-day theme-light-show fs-2"></i>
-                                    <i class="ki-outline ki-moon theme-dark-show fs-2"></i>
-                                </span></span>
-                        </a>
-                        <!--begin::Menu-->
-                        <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-title-gray-700 menu-icon-gray-500 menu-active-bg menu-state-color fw-semibold py-4 fs-base w-150px"
-                            data-kt-menu="true" data-kt-element="theme-mode-menu">
-                            <!--begin::Menu item-->
-                            <div class="menu-item px-3 my-0">
-                                <a href="#" class="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="light">
-                                    <span class="menu-icon" data-kt-element="icon">
-                                        <i class="ki-outline ki-night-day fs-2"></i>
-                                    </span>
-                                    <span id="light-mode" class="menu-title">lumineux</span>
-                                </a>
+                        <div class="menu-item px-5" data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+                            data-kt-menu-placement="left-start" data-kt-menu-offset="-15px, 0">
+                            <a href="#" class="menu-link px-5">
+                                <span class="menu-title position-relative">Mode
+                                    <span class="ms-5 position-absolute translate-middle-y top-50 end-0">
+                                        <i class="ki-outline ki-night-day theme-light-show fs-2"></i>
+                                        <i class="ki-outline ki-moon theme-dark-show fs-2"></i>
+                                    </span></span>
+                            </a>
+                            <!--begin::Menu-->
+                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-title-gray-700 menu-icon-gray-500 menu-active-bg menu-state-color fw-semibold py-4 fs-base w-150px"
+                                data-kt-menu="true" data-kt-element="theme-mode-menu">
+                                <!--begin::Menu item-->
+                                <div class="menu-item px-3 my-0">
+                                    <a href="#" class="menu-link px-3 py-2" data-kt-element="mode"
+                                        data-kt-value="light">
+                                        <span class="menu-icon" data-kt-element="icon">
+                                            <i class="ki-outline ki-night-day fs-2"></i>
+                                        </span>
+                                        <span class="menu-title">lumineux</span>
+                                    </a>
+                                </div>
+                                <!--end::Menu item-->
+                                <!--begin::Menu item-->
+                                <div class="menu-item px-3 my-0">
+                                    <a href="#" class="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="dark">
+                                        <span class="menu-icon" data-kt-element="icon">
+                                            <i class="ki-outline ki-moon fs-2"></i>
+                                        </span>
+                                        <span class="menu-title">Sombre</span>
+                                    </a>
+                                </div>
+                                <!--end::Menu item-->
+                                <!--begin::Menu item-->
+                                <div class="menu-item px-3 my-0">
+                                    <a href="#" class="menu-link px-3 py-2" data-kt-element="mode"
+                                        data-kt-value="system">
+                                        <span class="menu-icon" data-kt-element="icon">
+                                            <i class="ki-outline ki-screen fs-2"></i>
+                                        </span>
+                                        <span class="menu-title">System</span>
+                                    </a>
+                                </div>
+                                <!--end::Menu item-->
                             </div>
-                            <!--end::Menu item-->
-                            <!--begin::Menu item-->
-                            <div class="menu-item px-3 my-0">
-                                <a href="#" class="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="dark">
-                                    <span class="menu-icon" data-kt-element="icon">
-                                        <i class="ki-outline ki-moon fs-2"></i>
-                                    </span>
-                                    <span id="dark-mode" class="menu-title">Sombre</span>
-                                </a>
-                            </div>
-                            <!--end::Menu item-->
-                            <!--begin::Menu item-->
-                            <div class="menu-item px-3 my-0">
-                                <a href="#" class="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="system">
-                                    <span class="menu-icon" data-kt-element="icon">
-                                        <i class="ki-outline ki-screen fs-2"></i>
-                                    </span>
-                                    <span id="system-mode" class="menu-title">System</span>
-                                </a>
-                            </div>
-                            <!--end::Menu item-->
+                            <!--end::Menu-->
                         </div>
-                        <!--end::Menu-->
-                    </div>
-                    <!--end::Menu item-->
                         <!--end::Menu item-->
                         <!--begin::Menu item-->
                         <div class="menu-item px-5 my-1">
-                            <a href="../../demo44/dist/account/settings.html" class="menu-link px-5">parametre de compte</a>
+                            <a href="../../demo44/dist/account/settings.html" class="menu-link px-5">Parametre de compte</a>
                         </div>
                         <!--end::Menu item-->
                         <!--begin::Menu item-->
                         <div class="menu-item px-5">
-                            <a href="logout.php"
-                                class="menu-link px-5">se déconnecter</a>
+                            <a href="logout.php" class="menu-link px-5">Se déconnnecter</a>
                         </div>
                         <!--end::Menu item-->
                     </div>

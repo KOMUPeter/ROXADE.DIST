@@ -107,7 +107,7 @@ include('config/config.inc.php');
 									autocomplete="new-password" maxlength="35" required
 									class="form-control bg-transparent" id="passwordField" />
 								<button
-									class="btn btn-outline-secondary position-absolute end-0 translate-middle-y pb-5"
+									class="btn btn-outline-secondary position-absolute end-0 translate-middle-y pb-5 position-absolute top-50 end-0 translate-middle"
 									type="button" id="togglePassword">
 									<i class="bi bi-eye-slash"></i>
 								</button>
@@ -125,7 +125,7 @@ include('config/config.inc.php');
 								</button>
 							</div>
 
-							
+
 					</div>
 					<!--end::Input group=-->
 
