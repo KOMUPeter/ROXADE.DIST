@@ -12,6 +12,7 @@ $clientEmail = "";
 $clientId = 0;
 
 if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['n']) && $_GET['n'] == 'edit') {
+    // $clientId = intval($_GET['id']);
     // Load user from database using ID
     $client = new Client();
     if ($client->LoadClientFromID($_GET['id'])) {
@@ -25,7 +26,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['n']) && $_GET[
         $clientEmail = $client->getCliemail();
     
     } else {
-        $application->addToast('danger','Email','Client introuvable, veuillez vérifier l\'existence du client !');
+        echo "Client not found.";
         exit;
     }
 } 
@@ -140,7 +141,7 @@ include('include/html.inc.php')
 
                             <!--begin::Content container-->
                             <div id="kt_app_content_container" class="app-container  container-fluid ">
-                                <form method="post" action="defcli.php">
+                                <form method="post" action="defcli.php" enctype="multipart/form-data">
                                 <?php
                                     randomToken();
                                     addToken();
@@ -149,7 +150,7 @@ include('include/html.inc.php')
                                     <input type="hidden" name="action" value="<?= $n === "new" ? "add" : ($n === "edit" ? "edit" : "") ?>">
                                     <input type="hidden" name="id"
                                         value="<?= isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : "0" ?>">
-                        
+                                
                                     <div class="mb-10">
                                         <label class="form-label required">Nom</label>
                                         <input type="text" class="form-control form-control-solid" maxlength="100" required name="nom"
@@ -185,12 +186,18 @@ include('include/html.inc.php')
                                         <input type="email" class="form-control form-control-solid" maxlength="120" name="email"
                                             value="<?= $clientEmail ?>" placeholder="Adresse email du client">
                                     </div>
+            
+                                    <div class="mb-10">
+                                        <label class="form-label required">Pièce jointe</label>
+                                        <input type="file" class="file-custom" name="fichier-client">
+                                    </div>
+                                 
                                     <div class="mb-10">
                                         <label class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
                                             <!--begin::Inputs-->
                                             <input class="form-check-input" name="google" type="checkbox" value="1"
                                                 id="kt_modal_connected_accounts_google" checked="checked">
-                        
+                                        
                         
                                             <!--end::Inputs-->
                         
@@ -200,6 +207,7 @@ include('include/html.inc.php')
                                             <!--end::Label-->
                                         </label>
                                     </div>
+                                
                                     <h5>Contacts</h5>
                                     <?php
                                     /*

@@ -1,4 +1,7 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(E_ALL); // show all errors
 
 session_start();
@@ -21,7 +24,6 @@ const GLOBAL_HTML_TITLE = "ROXADE | Support clients";
 
 setlocale(LC_TIME, "fr_FR");
 
-
 /*
  * Fonctions
  */
@@ -36,6 +38,7 @@ foreach($files as $file) if ($file != '.' && $file != '..') require ($_SERVER['D
 
 require_once('autoload.php');
 require_once('fpdf.php');
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 

@@ -81,52 +81,59 @@ $_SESSION['toasts'] = array();
 	})
 </script>
 
+
 <script>
+window.addEventListener('load', () => {
+    // Récupérez la valeur stockée dans le stockage local
+    const storedMode = localStorage.getItem('themeMode');
+
+    if (storedMode !== null) {
+        currentMode = parseInt(storedMode);
+    } else {
+        currentMode = 0; // Utilisez une valeur par défaut si aucune valeur n'est stockée
+    }
+
+    // Appliquez le mode en fonction de la valeur récupérée
+    const userImage = document.getElementById('user-image');
+    const contactImage = document.getElementById('contact-image'); // Ajoutez cette ligne pour sélectionner l'image de contact
+
+    if (currentMode === 0) {
+        userImage.src = '../assets/media/avatars/icon-user.png';
+        contactImage.src = '../assets/media/avatars/icon-user.png';
+    } else if (currentMode === 1) {
+        userImage.src = '../assets/media/avatars/white-icon-user.png';
+        contactImage.src = '../assets/media/avatars/white-icon-user.png';
+    }
+}); 
+
 // Sélectionnez les boutons de bascule de mode et l'image de l'utilisateur
 const lightModeButton = document.getElementById('light-mode');
 const darkModeButton = document.getElementById('dark-mode');
 const systemModeButton = document.getElementById('system-mode');
 const userImage = document.getElementById('user-image');
+const contactImage = document.getElementById('contact-image'); // Ajoutez cette ligne pour sélectionner l'image de contact
 
 // Gardez une trace du mode actuel (0 pour lumineux, 1 pour sombre, 2 pour système)
 let currentMode = 0;
 
-// Écoutez le clic sur le bouton de mode lumineux
 lightModeButton.addEventListener('click', () => {
     currentMode = 0;
     userImage.src = '../assets/media/avatars/icon-user.png';
+    contactImage.src = '../assets/media/avatars/icon-user.png';
+    // Stockez la valeur actuelle dans le stockage local
+    localStorage.setItem('themeMode', currentMode);
 });
 
-// Écoutez le clic sur le bouton de mode sombre
 darkModeButton.addEventListener('click', () => {
     currentMode = 1;
     userImage.src = '../assets/media/avatars/white-icon-user.png';
+    contactImage.src = '../assets/media/avatars/white-icon-user.png';
+    localStorage.setItem('themeMode', currentMode);
 });
 
-// Écoutez le clic sur le bouton de mode système
 systemModeButton.addEventListener('click', () => {
     currentMode = 2;
-  
-});
-</script>
-
-<script>
-const lightModeButton = document.getElementById('light-mode');
-const darkModeButton = document.getElementById('dark-mode');
-const systemModeButton = document.getElementById('system-mode');
-const logoImage = document.getElementById('logo-image');
-
-// Écoutez le clic sur le bouton de mode lumineux
-lightModeButton.addEventListener('click', () => {
-    logoImage.src = 'assets/media/logos/custom-1.png';
-});
-
-darkModeButton.addEventListener('click', () => {
-    logoImage.src = 'assets/media/logos/sidelogo.png';
-});
-
-systemModeButton.addEventListener('click', () => {
-    // Ajoutez la logique pour changer l'image en fonction du mode système ici
 });
 
 </script>
+

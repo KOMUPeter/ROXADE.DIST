@@ -3,19 +3,14 @@
 require_once('config/config.inc.php');
 require_once('config/login.inc.php');
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-if (isset($_POST['action']) && isset($contactConnected)) { 
+if (isset($_POST['action']) && isset($contactConnected)) {
 
-    if (isset($_POST['demande']) && isset($_POST['niveau']) && isset($_POST['titre']) && isset($_POST['descriptif'])  ) {
+    if (isset($_POST['demande']) && isset($_POST['niveau']) && isset($_POST['titre']) && isset($_POST['descriptif'])) {
         $ticket = new Tickets();
-        $ticket->newRecord($contactConnected->getCctcli(),$contactConnected->getCctid(),$_POST['demande'],$_POST['niveau'],$_POST['titre'] ,$_POST['descriptif'] );
+        $ticket->newRecord($contactConnected->getCctcli(), $contactConnected->getCctid(), $_POST['demande'], $_POST['niveau'], $_POST['titre'], $_POST['descriptif']);
 
         // chemin vers le dossier de sauvegarde de fichiers.
         $uploadDirectory = '/assets/fichiers';
@@ -23,18 +18,18 @@ if (isset($_POST['action']) && isset($contactConnected)) {
         for ($i = 1; $i <= 6; $i++) {
 
             // filename me sert a modifier le format des nom et de présentation , je souhaite donc uniformiser tout cela(id sera un variable prenant l'id du ticket liée)
-            $filename = 'fichier'. $i;
+            $filename = 'fichier' . $i;
 
             if (isset($_FILES[$filename]) && $_FILES[$filename]['error'] === UPLOAD_ERR_OK) {
                 // Vérifiez si le fichier a été correctement téléchargé
                 $originalName = $_FILES[$filename]['name'];
-                $targetFile = $uploadDirectory.$ticket->getTicid().'_'.$i;
+                $targetFile = $uploadDirectory . $ticket->getTicid() . '_' . $i;
 
                 // Déplace le fichier téléchargé vers  asses/fichiers .
                 if (move_uploaded_file($_FILES[$filename]['tmp_name'], $targetFile)) {
                     __QUERY('INSERT INTO tickets_fichiers (tiftic , tifname , tiftype , tifsize)
-                    VALUES ('. $ticket->getTicid() .' "'. __STRING($_FILES[$filename]['name']) .'","'. __STRING($_FILES[$filename]['type']) .'", '.$_FILES[$filename]['size'].')');
-                    
+                    VALUES (' . $ticket->getTicid() . ' "' . __STRING($_FILES[$filename]['name']) . '","' . __STRING($_FILES[$filename]['type']) . '", ' . $_FILES[$filename]['size'] . ')');
+
                 } else {
                     $application->addToast('danger', 'Envoie de fichiers', 'Un ou plusieurs de vos fichiers n\'ont pas pu être enregistré.');
                 }
@@ -45,10 +40,39 @@ if (isset($_POST['action']) && isset($contactConnected)) {
     exit;
 }
 
+if (isset($_POST['action']) && isset($userConnected)) {
+    if ($_POST['action'] == 'prise-en-charge') {
+        // Check if the ticket can be taken by the user
+        $ticket = new Tickets();
+        if ($ticket->loadFromId($_POST['ticket'])) {
+            if ($ticket->getTicpec() == 0) {
+                // Update the database with the user ID
+                $ticket->priseEnCharge($userConnected->getUselogin(), $userConnected->getUseid());
+                $application->addToast('success', 'Prise en charge', 'Vous avez bien pris en charge le ticket n°' . $ticket->getTicid());
+            } else {
+                $application->addToast('danger', 'Prise en charge', 'Le ticket n°' . $ticket->getTicid() . ' a déja été pris en charge par ' . $ticket->getTicpecus());
+            }
+        }
 
+    }
 
+    if ($_POST['action'] == 'annuler_Prise_EnCharge') {
+        // Check if the ticket can be canceled
+        $ticket = new Tickets();
+        if ($ticket->loadFromId($_POST['ticket'])) {
+            if ($ticket->getTicpec() == 1 && isset($userConnected) && $ticket->getTicpecuse() == $userConnected->getUseid()) {
+                // Update the database with the user ID
+                $ticket->nonPriseEnCharge($userConnected->getUselogin(), $userConnected->getUseid());
+                $application->addToast('success', 'Annuler prise en charge', 'Prise en charge annuler le ticket n°' . $ticket->getTicid());;
+            } else {
+                $application->addToast('danger', 'Annuler prise en charge', 'Vous ne pouvez pas annuler le ticket n°' . $ticket->getTicid());            }
+        }
 
-
+    }
+    
+    header('location: index.php');
+    exit;
+}
 
 
 include 'include/html.inc.php';
@@ -137,130 +161,166 @@ include 'include/html.inc.php';
                                 <!--begin::Content container-->
                                 <div id="kt_app_content_container" class="app-container  container-fluid ">
 
-                                <?php 
-                                        if (isset($userConnected)) {
+                                    <?php
+                                    if (isset($userConnected)) {
                                         $result = __QUERY("SELECT ticid FROM tickets");
-                                        
+
                                         if (__ROWS($result) > 0) { ?>
-                                    <table class="table table-bordered table-striped table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center">
-                                                    Type
-                                                </th>
-                                                <th>
-                                                    Niveau
-                                                </th>
-                                                <th>
-                                                    Client
-                                                </th>
-                                                <th>
-                                                    Titre
-                                                </th>
-                                                <th>
-                                                    Descriptif
-                                                </th>
-                                                <th>
-                                                    Prise en charge
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                            <tbody>
-                                                <?php
-                                                while ($row = __ARRAY($result)) { 
-                                                    $ticket = new Tickets($row['ticid']);
-                                                    ?>
-                                                    
+                                            <table class="table table-bordered table-striped table-hover">
+                                                <thead>
                                                     <tr>
-															<td class="text-center">
-																	<?= $ticket->getBadgeType() ?>
-																</td>
-																<td class="font-weight-bold text-center">
-																<?= $ticket->getBagdeNiveau() ?>
-																</td>
-																<td class="text-nowrap">
-																	<div><a href="client.php?n=<?= $ticket->getTiccli() ?>"><?= $ticket->getClientNom() ?></a></div>
-																	<div class="text-muted"><?= $ticket->getContactNom() ?></div>
-																</td>
-																<td>
-																	<?= $ticket->getTictitre() ?>
-																</td>
-																<td>
-																	<?= nl2br($ticket->getTicdescriptif());?>
-																</td>
-                                                                <td class="text-center" >
-                                                            <?= $ticket->getIconePEC() ?>
-                                                                </td>
-															</tr>
+                                                        <th class="text-center">
+                                                            Type
+                                                        </th>
+                                                        <th>
+                                                            Niveau
+                                                        </th>
+                                                        <th>
+                                                            Client
+                                                        </th>
+                                                        <th>
+                                                            Titre
+                                                        </th>
+                                                        <th>
+                                                            Descriptif
+                                                        </th>
+                                                        <th>
+                                                            Prise en charge
+                                                        </th>
                                                     </tr>
-                                                <?php } ?>
-                                            </tbody>
-                                        </table>
-                                    <?php 
-                                        } 
-                                    ?>
-                                    <?php 
-                                    } 
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                    while ($row = __ARRAY($result)) {
+                                                        $ticket = new Tickets($row['ticid']);
+                                                        ?>
+
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                <?= $ticket->getBadgeType() ?>
+                                                            </td>
+                                                            <td class="font-weight-bold text-center">
+                                                                <?= $ticket->getBagdeNiveau() ?>
+                                                            </td>
+                                                            <td class="text-nowrap">
+                                                                <div><a href="client.php?n=<?= $ticket->getTiccli() ?>">
+                                                                        <?= $ticket->getClientNom() ?>
+                                                                    </a></div>
+                                                                <div class="text-muted">
+                                                                    <?= $ticket->getContactNom() ?>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <?= $ticket->getTictitre() ?>
+                                                            </td>
+                                                            <td>
+                                                                <?= nl2br($ticket->getTicdescriptif()); ?>
+                                                            </td>
+
+                                                            <td class="text-center">
+                                                                <?php if ($ticket->getTicpec() != 1) { ?>
+                                                                    <div>
+                                                                        <form method="post"
+                                                                            class="d-flex align-items-center justify-content-center g-3"
+                                                                            onsubmit="return confirmAction();">
+                                                                            <?= $ticket->getIconePEC() ?>
+                                                                            <input type="hidden" name="action" value="prise-en-charge">
+                                                                            <input type="hidden" name="ticket"
+                                                                                value="<?= $ticket->getTicid() ?>">
+                                                                            <button class="btn btn-sm shadow ms-2" type="submit">Prends
+                                                                                le Ticket</button>
+                                                                        </form>
+                                                                    </div>
+                                                                <?php } else { ?>
+                                                                    <div class="d-flex align-items-center">
+                                                                        <?= $ticket->getIconePEC() ?>
+                                                                        <div>
+                                                                        <p class="ml-2">Ticket pris par:
+                                                                            <?= $ticket->getTicpecuse() ?>
+                                                                        </p>
+                                                                        <form method="post"
+                                                                            class="d-flex align-items-center justify-content-center g-3"
+                                                                            onsubmit="return unConfirmAction();">
+                                                                            <input type="hidden" name="action" value="annuler_Prise_EnCharge">
+                                                                            <input type="hidden" name="ticket"
+                                                                                value="<?= $ticket->getTicid() ?>">
+                                                                            <button class="btn btn-sm shadow ms-2" type="submit"><small><small><small>Annuler Prise EnCharge</small></small></small></button>
+                                                                        </form>
+                                                                        </div>
+                                                                    </div>
+                                                                <?php 
+                                                                } 
+                                                            ?>
+                                                            </td>
+                                                        </tr>
+                                                        </tr>
+                                                    <?php } ?>
+                                                </tbody>
+                                            </table>
+                                            <?php
+                                        }
+                                        ?>
+                                        <?php
+                                    }
                                     ?>
 
-                                        <?php 
-                                        if (isset($clientConnected)) {
-                                        $result = __QUERY('SELECT ticid FROM tickets WHERE ticcli = ' . $clientConnected->getTiccli());
-                                        
+                                    <?php
+                                    if (isset($contactConnected)) {
+                                        $result = __QUERY('SELECT ticid FROM tickets WHERE ticcli = ' . $contactConnected->getCctid());
+
                                         if (__ROWS($result) > 0) { ?>
-                                        <table class="table table-bordered table-striped table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center">
-                                                    Type
-                                                </th>
-                                                <th>
-                                                    Niveau
-                                                </th>
-                                                <th>
-                                                    Titre
-                                                </th>
-                                                <th>
-                                                    Descriptif
-                                                </th>
-                                                <th>
-                                                    Prise en charge
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                                <?php
-                                                while ($row = __ARRAY($result)) { 
-                                                    $ticket = new Tickets($row['ticid']);
-                                                    ?>
-                                                    
+                                            <table class="table table-bordered table-striped table-hover">
+                                                <thead>
                                                     <tr>
-															<td class="text-center">
-																	<?= $ticket->getBadgeType() ?>
-																</td>
-																<td class="font-weight-bold text-center">
-																<?= $ticket->getBagdeNiveau() ?>
-																</td>
-																<td>
-																	<?= $ticket->getTictitre() ?>
-																</td>
-																<td>
-																	<?= nl2br($ticket->getTicdescriptif());?>
-																</td>
-															</tr>
-                                                        <td class="text-center" >
-                                                            <?= $ticket->getIconePEC() ?>
-                                                        </td>
+                                                        <th class="text-center">
+                                                            Type
+                                                        </th>
+                                                        <th>
+                                                            Niveau
+                                                        </th>
+                                                        <th>
+                                                            Titre
+                                                        </th>
+                                                        <th>
+                                                            Descriptif
+                                                        </th>
+                                                        <th>
+                                                            Prise en charge
+                                                        </th>
                                                     </tr>
-                                                <?php
-                                                } 
-                                             ?>
-                                            </tbody>
-                                        </table>
-                                    <?php 
-                                        } 
-           
-                                    } 
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                    while ($row = __ARRAY($result)) {
+                                                        $ticket = new Tickets($row['ticid']);
+                                                        ?>
+
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                <?= $ticket->getBadgeType() ?>
+                                                            </td>
+                                                            <td class="font-weight-bold text-center">
+                                                                <?= $ticket->getBagdeNiveau() ?>
+                                                            </td>
+                                                            <td>
+                                                                <?= $ticket->getTictitre() ?>
+                                                            </td>
+                                                            <td>
+                                                                <?= nl2br($ticket->getTicdescriptif()); ?>
+                                                            </td>
+
+                                                            <td class="text-center">
+                                                                <?= $ticket->getIconePEC() ?>
+                                                            </td>
+                                                        </tr>
+                                                        <?php
+                                                    }
+                                                    ?>
+                                                </tbody>
+                                            </table>
+                                            <?php
+                                        }
+                                    }
                                     ?>
                                 </div>
                                 <!--end::Content container-->
@@ -289,6 +349,35 @@ include 'include/html.inc.php';
             <?php include('include/javascript.inc.php') ?>
             <script type="text/javascript">
 
+
+                function confirmAction() {
+                    return confirm("Etes-vous sûr de vouloir prendre le ticket ?");
+                }
+
+                function unConfirmAction() {
+                    return confirm("Etes-vous sûr de vouloir annuler le ticket ?");
+                }
+                
+                function prendreEnCharge(ticid) {
+
+                    $.ajax({
+                        type: 'POST',
+                        url: 'tickets.php',
+                        data: { action: 'prise-en-charge', ticid: ticid }
+                    });
+                }
+
+                function annulerPriseEnCharge(ticid) {
+
+                    $.ajax({
+                        type: 'POST',
+                        url: 'tickets.php',
+                        data: { action: 'annuler_Prise_EnCharge', ticid: ticid }
+                    });
+                }
+
+
+
                 $(document).ready(function () {
                     $('.form-check-input').click(function () {
                         $.ajax({
@@ -315,7 +404,8 @@ include 'include/html.inc.php';
                 }
             </script>
             <!--end::Javascript-->
-
+        </div>
+    </div>
 </body>
 <!--end::Body-->
 

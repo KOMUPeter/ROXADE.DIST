@@ -11,7 +11,11 @@ class Tickets {
     private $ticdescriptif;
     private $ticpec;
     private $ticpecdt;
+	private $ticpecus;
     private $ticpecuse;
+    private $ticend;
+    private $ticenddt;
+    private $ticendus;
 
     public function __construct($id = null) {
 		$this->ticcli = 0;
@@ -27,7 +31,25 @@ class Tickets {
         $this->loadFromID(__INSERT_ID());
     }
 
+	public function priseEnCharge($ticpecus,$ticpecuse) {
+		$this->ticpec = 1 ; 
+		$this->ticpecdt = time() ;
+		$this->ticpecus = $ticpecus;
+		$this->ticpecuse = (int)$ticpecuse;
+		
+		__QUERY( 'UPDATE tickets SET ticpec = 1 , ticpecdt = NOW() , ticpecus = "'. __STRING($ticpecus).'",  ticpecuse = ' . (int)$ticpecuse . ' WHERE ticid = ' . $this->ticid );
+		return(__AFFECTED());
+	}
 
+	public function nonPriseEnCharge($ticpecus,$ticpecuse) {
+		$this->ticpec = 0 ; 
+		$this->ticpecdt = time() ;
+		
+		__QUERY( 'UPDATE tickets SET ticpec = 0 , ticpecdt = NOW() WHERE ticid = ' . $this->ticid );
+		return(__AFFECTED());
+	}
+	
+	
 	public function loadFromID($ticid)
     {
 
@@ -180,10 +202,51 @@ class Tickets {
 
 	public function getIconePEC() {
 		if ($this->ticpec == 0 ) {
-			return ('<i class="fa fa-hourglass text-warning"></i>');
+			return ('<i class="fa fa-hourglass text-danger"></i>');
 		}
 		if ($this->ticpec == 1) {
 			return ('<i class="fa fa-check-circle text-success"></i>');
 		}
+	}
+
+
+	public function getTicpecus() {
+		return $this->ticpecus;
+	}
+	
+	
+	public function setTicpecus($ticpecus): self {
+		$this->ticpecus = $ticpecus;
+		return $this;
+	}
+
+
+	public function getTicend() {
+		return $this->ticend;
+	}
+
+	public function setTicend($ticend): self {
+		$this->ticend = $ticend;
+		return $this;
+	}
+
+	public function getTicenddt() {
+		return $this->ticenddt;
+	}
+	
+
+	public function setTicenddt($ticenddt): self {
+		$this->ticenddt = $ticenddt;
+		return $this;
+	}
+
+
+	public function getTicendus() {
+		return $this->ticendus;
+	}
+
+	public function setTicendus($ticendus): self {
+		$this->ticendus = $ticendus;
+		return $this;
 	}
 }

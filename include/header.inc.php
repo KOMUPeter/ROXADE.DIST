@@ -1,14 +1,4 @@
-<?php
 
-require_once('config/config.inc.php');
-require_once('config/login.inc.php');
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-include 'include/html.inc.php';
-
-?>
 <!--begin::Header-->
 <div id="kt_app_header" class="app-header" data-kt-sticky="true" data-kt-sticky-activate="{default: false, lg: true}"
     data-kt-sticky-name="app-header-sticky" data-kt-sticky-offset="{default: false, lg: '300px'}">
@@ -596,7 +586,9 @@ include 'include/html.inc.php';
                             <img id="user-image" class="mode-image symbol symbol-35px symbol-md-40px"
                                 src="../assets/media/avatars/icon-user.png" alt="user" />
                             <?php
-                        } else {
+                        } 
+                        
+                        if(isset($contactConnected)){
                             ?>
                             <img class="symbol symbol-35px symbol-md-40px" src="../assets/media/avatars/300-30.jpg"
                                 alt="user" />
@@ -614,7 +606,7 @@ include 'include/html.inc.php';
                                 <div class="symbol symbol-50px me-5">
                                 <?php
                                     if (isset($userConnected)) { ?>
-                                        <img id="user-image" alt="Logo" src="assets/media/avatars/icon-user.png" />
+                                        <img id="contact-image"  alt="Logo" src="assets/media/avatars/icon-user.png" />
                                     <?php } else {
                                         ?>
                                         <img alt="Logo" src="assets/media/avatars/300-30.jpg" />
@@ -629,9 +621,9 @@ include 'include/html.inc.php';
                                             echo $userConnected->getUsenom();
                                         } 
                                         
-                                        if (isset($clientConnected)) {
-                                            var_dump('ok');
-                                            echo $clientConnected->getCctprenom();
+                                        if (isset($contactConnected)) {
+                                           
+                                            echo $contactConnected->getCctprenom();
                                         }
                                         ?>
                                     
@@ -639,18 +631,18 @@ include 'include/html.inc.php';
                                         <?php
                                             if (isset($userConnected)) {
                                                 echo 'Roxade';
-                                            } elseif (isset($clientConnected)) {
+                                            } elseif (isset($contactConnected)) {
                                                 echo 'Client';
                                             }
                                             ?>
                                         </span>
                                     </div>
-                                    <a href="#" class="fw-semibold text-muted text-hover-primary fs-7">
+                                    <a href="account.php" class="fw-semibold text-muted text-hover-primary fs-7">
                                     <?php
                                         if (isset($userConnected)) {
                                             echo $userConnected->getUselogin();
-                                        } elseif (isset($clientConnected)) {
-                                            echo $clientConnected->getCctemail();
+                                        } elseif (isset($contactConnected)) {
+                                            echo $contactConnected->getCctemail();
                                            
                                         }
                                         
@@ -666,7 +658,7 @@ include 'include/html.inc.php';
                         <!--end::Menu separator-->
                         <!--begin::Menu item-->
                         <div class="menu-item px-5">
-                            <a href="../../demo44/dist/account/overview.html" class="menu-link px-5">Mon Profile</a>
+                            <a href="account.php" class="menu-link px-5">Mon Profile</a>
                         </div>
                         <!--end::Menu item-->
                         <!--begin::Menu item-->
@@ -701,10 +693,12 @@ include 'include/html.inc.php';
                                 </div>
                                 <!--end::Menu item-->
                                 <!--begin::Menu item-->
+                                <?php if(isset($userConnected)){  ?>
                                 <div class="menu-item px-3">
                                     <a href="../../demo44/dist/account/statements.html"
                                         class="menu-link px-5">Historique</a>
                                 </div>
+                              <?php   }?>
                                 <!--end::Menu item-->
                             
                             </div>
