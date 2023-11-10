@@ -8,9 +8,9 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     verifyToken();
 
     // Get client input
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
+    $email = isset($_POST['email']) ? htmlspecialchars($_POST['email'], ENT_QUOTES) : '';
+    $password = isset($_POST['password']) ? htmlspecialchars($_POST['password'], ENT_QUOTES) : '';
+    
     $user = authenticateUser($email, $password);
 
     $client = authenticateContact($email, $password);

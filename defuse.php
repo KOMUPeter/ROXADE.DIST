@@ -268,6 +268,9 @@ include 'include/html.inc.php';
                                                     <th>
                                                         Nom
                                                     </th>
+                                                    <th>
+                                                    Actualiser
+                                                    </th>
                                                     
                                                     <th></th>
                                                 </tr>
@@ -385,6 +388,25 @@ include 'include/html.inc.php';
                     });
                 });
             });
+
+            // document.addEventListener('DOMContentLoaded', function () {
+            //     document.querySelectorAll('.toggle-actif').forEach(function (element) {
+            //         element.addEventListener('click', function () {
+            //             fetch('./defuse-switch.php?f=active&n=' + element.getAttribute('data-id') + '&c=' + element.checked, {
+            //                 method: 'GET'
+            //             });
+            //         });
+            //     });
+            
+            //     document.querySelectorAll('.toggle-admin').forEach(function (element) {
+            //         element.addEventListener('click', function () {
+            //             fetch('./defuse-switch.php?f=admin&n=' + element.getAttribute('data-id') + '&c=' + element.checked, {
+            //                 method: 'GET'
+            //             });
+            //         });
+            //     });
+            // });
+
 
             function confirmGeneratePassword(n) {
                 Swal.fire({

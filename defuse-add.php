@@ -21,10 +21,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['n']) && $_GET[
     }
 }
 
-
-
-
-
 $titrePage = "Définition des utilisateurs";
 error_reporting(E_ALL);
 

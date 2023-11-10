@@ -2,6 +2,9 @@
 
 include('config/config.inc.php');
 
+$email = isset($_POST['email']) ? htmlspecialchars($_POST['email'], ENT_QUOTES) : '';
+$password = isset($_POST['password']) ? htmlspecialchars($_POST['password'], ENT_QUOTES) : '';
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -96,18 +99,22 @@ include('config/config.inc.php');
 							<!--begin::Heading-->
 							<!--begin::Input group=-->
 							<div class="fv-row mb-5">
-								<!--begin::Email-->
+								<!-- Input Email -->
 								<input type="email" required placeholder="Email" name="email" maxlength="120"
-									autocomplete="off" class="form-control bg-transparent" />
-								<!--end::Email-->
+									autocomplete="off" class="form-control bg-transparent"
+									value="<?php echo $email; ?>" />
 							</div>
-							<!--end::Input group=-->
+							<!-- end::Email -->
+
+							<!-- Input password -->
 							<div class="form-group position-relative">
 								<input type="password" placeholder="Password" name="password"
 									autocomplete="new-password" maxlength="35" required
-									class="form-control bg-transparent" id="passwordField" />
+									class="form-control bg-transparent" id="passwordField"
+									value="<?php echo $password; ?>" />
+
 								<button
-									class="btn btn-outline-secondary position-absolute end-0 translate-middle-y pb-5 position-absolute top-50 end-0 translate-middle"
+									class="btn  position-absolute end-0 translate-middle-y pb-5 position-absolute top-50 end-0 translate-middle"
 									type="button" id="togglePassword">
 									<i class="bi bi-eye-slash"></i>
 								</button>

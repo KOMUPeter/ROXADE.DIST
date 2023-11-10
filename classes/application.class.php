@@ -9,9 +9,12 @@ class Application
 
 	public function __construct()
 	{
-    
+        /*
+         * Initialisation de la variable de session pour la gestion des toasts
+         */
         if (!isset($_SESSION['toasts'])) $_SESSION['toasts'] = array();
 	}
+
 
     public function addToast($type, $titre, $message)
     {

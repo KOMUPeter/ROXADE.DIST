@@ -115,48 +115,89 @@ if (isset($_POST['action'])) {
 
     header('Location: defcli.php');
     exit;
+}
+
+if (isset($_GET['n']) && isset($_GET['c'])) {
+    $action = 'contact'; // Set the action to "contact"
+    $id = $_GET['n'];    // Get the 'n' parameter from the URL
+    $client = $_GET['c'];
+
+$contact = new ClientContacts();
+$clinom = isset($_POST['nom']) ? $_POST['nom'] : null;
+$cliadr = isset($_POST['adresse']) ? $_POST['adresse'] : null;
+$clicp = isset($_POST['code-postal']) ? $_POST['code-postal'] : null;
+$cliville = isset($_POST['ville']) ? $_POST['ville'] : null;
+$cliurl = isset($_POST['site-web']) ? $_POST['site-web'] : null;
+$clitel = isset($_POST['telephone']) ? $_POST['telephone'] : null;
+$cliemail = isset($_POST['email']) ? $_POST['email'] : null;
+
+if ($_POST['action'] == 'add') {
+    if (__FETCH("SELECT clinom FROM clients WHERE clinom = '" . __STRING($clinom) . "'")) {
+        // Handle the case when a client with the same 'clinom' already exists.
+    }
+    $client->newClientRecord();
+    $client->setClinom($clinom);
+
+    $application->addToast('success', 'Email', 'Nouveau client ajouté avec succès.');
+
+    $filename = 'fichier-client';
+    $uploadDirectory = './assets/logos/';
 
 
-    /*
-    if ($_POST['action'] == 'add') {
+    if (isset($_FILES[$filename]) && $_FILES[$filename]['error'] === UPLOAD_ERR_OK) {
+        // Vérifiez si le fichier a été correctement téléchargé
+        $originalName = $_FILES[$filename]['name'];
+        $targetFile = $uploadDirectory . $client->getCliid();
 
-        $clinom = isset($_POST['nom']) ? $_POST['nom'] : null;
-        $cliadr = isset($_POST['adresse']) ? $_POST['adresse'] : null;
-        $clicp = isset($_POST['code-postal']) ? $_POST['code-postal'] : null;
-        $cliville = isset($_POST['ville']) ? $_POST['ville'] : null;
-        $cliurl = isset($_POST['site-web']) ? $_POST['site-web'] : null;
-        $clitel = isset($_POST['telephone']) ? $_POST['telephone'] : null;
-        $cliemail = isset($_POST['email']) ? $_POST['email'] : null;
+        // Déplace le fichier téléchargé vers  asses/fichiers .
+        if (move_uploaded_file($_FILES[$filename]['tmp_name'], $targetFile)) {
 
-
-        if (!__FETCH("SELECT clinom FROM clients WHERE clinom = '" .__STRING($clinom). "'")) {
-
-            $client->newClientRecord(
-                $clinom,
-                $cliadr,
-                $clicp,
-                $cliville,
-                $cliurl,
-                $clitel,
-                $cliemail
-            );
-            
-            header('Location: defcli.php');
-            exit;
-            
-        } 
-        else {
-            // Handle the case when a client with the same 'clinom' already exists.
+        } else {
+            $application->addToast('danger', 'Envoie de logo', 'votre logo n\'a pas pu être enregistré.');
         }
     }
-    if ($_POST['action'] == 'edit') {
-        if ($client->loadClientFromID($_POST['nom'])) {
-            $client->setClinom($_POST['nom']);
-            // ADD ALL FIELDS
+
+}
+if ($_POST['action'] == 'edit') {
+    
+    if ($client->loadClientFromID($_POST['id'])) {
+        
+        // Handle the case when the client is not found.
+        $filename = 'fichier-client';
+        $uploadDirectory = './assets/logos/';
+
+        if (isset($_FILES[$filename])) {
+            if ($_FILES[$filename]['size'] != 0 && $_FILES[$filename]['name'] != '') {
+
+                // Vérifiez si le fichier a été correctement téléchargé
+                $originalName = $_FILES[$filename]['name'];
+                $targetFile = $uploadDirectory . $client->getCliid();
+
+                // Déplace le fichier téléchargé vers  asses/fichiers .
+                if (move_uploaded_file($_FILES[$filename]['tmp_name'], $targetFile)) {
+
+                } else {
+                    $application->addToast('danger', 'Envoie de logo', 'votre logo n\'a pas pu être enregistré.');
+                }
+            }
         }
     }
-    */
-    // exit;
+
+}
+
+$client->setCliadr($cliadr);
+$client->setClicp($clicp);
+$client->setCliville($cliville);
+$client->setCliurl($cliurl);
+$client->setClitel($clitel);
+$client->setCliemail($cliemail);
+
+$application->addToast('success', 'Email', 'Client modifié avec succès.');
+
+
+
+header('Location: defcli.php');
+exit;
 }
 include 'include/html.inc.php';
 ?>

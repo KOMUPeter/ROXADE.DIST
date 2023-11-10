@@ -3,6 +3,25 @@
 include 'config/config.inc.php';
 include 'config/login.inc.php';
 
+if (isset($_POST['action']) && isset($userConnected)) {
+    if ($_POST['action'] == 'prise-en-charge') {
+        // Check if the ticket can be taken by the user
+        $ticket = new Tickets();
+        if ($ticket->loadFromId($_POST['ticket'])) {
+            if ($ticket->getTicpec() == 0) {
+                // Update the database with the user ID
+                $ticket->priseEnCharge($userConnected->getUselogin(), $userConnected->getUseid());
+                $application->addToast('success', 'Prise en charge', 'Vous avez bien pris en charge le ticket n°' . $ticket->getTicid());
+            } else {
+                $application->addToast('danger', 'Prise en charge', 'Le ticket n°' . $ticket->getTicid() . ' a déja été pris en charge par ' . $ticket->getTicpecus());
+            }
+        }
+
+    }
+    
+    header('location: tickets.php');
+    exit;
+}
 
 include('include/html.inc.php')
 	?>
@@ -65,6 +84,9 @@ include('include/html.inc.php')
 															<th>
 																Descriptif
 															</th>
+															<th>
+                                                            Prise en charge
+                                                        	</th>
 														</tr>
 													</thead>
 
@@ -95,6 +117,41 @@ include('include/html.inc.php')
 																<td>
 																	<?= nl2br($ticket->getTicdescriptif()); ?>
 																</td>
+																<td class="text-center">
+                                                                <?php if ($ticket->getTicpec() != 1) { ?>
+                                                                    <div>
+                                                                        <form method="post"
+                                                                            class="d-flex align-items-center justify-content-center g-3"
+                                                                            onsubmit="return confirmAction();">
+                                                                            <?= $ticket->getIconePEC() ?>
+                                                                            <input type="hidden" name="action" value="prise-en-charge">
+                                                                            <input type="hidden" name="ticket"
+                                                                                value="<?= $ticket->getTicid() ?>">
+                                                                            <button class="btn btn-sm shadow ms-2" type="submit">Prends
+                                                                                le Ticket</button>
+                                                                        </form>
+                                                                    </div>
+                                                                <?php } else { ?>
+                                                                    <div class="d-flex align-items-center">
+                                                                        <?= $ticket->getIconePEC() ?>
+                                                                        <div>
+                                                                        <p class="ml-2">Ticket pris par:
+                                                                            <?= $ticket->getTicpecuse() ?>
+                                                                        </p>
+                                                                        <form method="post"
+                                                                            class="d-flex align-items-center justify-content-center g-3"
+                                                                            onsubmit="return unConfirmAction();">
+                                                                            <input type="hidden" name="action" value="annuler_Prise_EnCharge">
+                                                                            <input type="hidden" name="ticket"
+                                                                                value="<?= $ticket->getTicid() ?>">
+                                                                            <button class="btn btn-sm shadow ms-2" type="submit"><small><small><small>Annuler Prise EnCharge</small></small></small></button>
+                                                                        </form>
+                                                                        </div>
+                                                                    </div>
+                                                                <?php 
+                                                                } 
+                                                            ?>
+                                                            </td>
 															</tr>
 															<?php
 														}
@@ -107,8 +164,8 @@ include('include/html.inc.php')
 										}
 										?>
 										<?php
-										if (isset($clientConnected)) {
-											$result = __QUERY('SELECT ticid FROM tickets WHERE ticcli = ' . $clientConnected->getTiccli());
+										if (isset($contactConnected)) {
+											$result = __QUERY('SELECT ticid FROM tickets WHERE ticcli = ' . $contactConnected->getCctid());
 
 											if (__ROWS($result) > 0) { ?>
 												<table class="table table-bordered table-striped table-hover">
@@ -185,6 +242,21 @@ include('include/html.inc.php')
 
 	<!--begin::Javascript-->
 	<?php include('include/javascript.inc.php') ?>
+	<script type="text/javascript">
+
+	function confirmAction() {
+                    return confirm("Etes-vous sûr de vouloir prendre le ticket ?");
+                }
+                
+                function prendreEnCharge(ticid) {
+
+                    $.ajax({
+                        type: 'POST',
+                        url: 'tickets.php',
+                        data: { action: 'prise-en-charge', ticid: ticid }
+                    });
+                }
+	</script>
 	<!--end::Javascript-->
 
 </body>
