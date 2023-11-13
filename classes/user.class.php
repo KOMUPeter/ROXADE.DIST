@@ -34,6 +34,41 @@ class User
         return false; // User not found
     }
 
+    // public function loadFromID($useid)
+    // {
+    //     $databaseLink = new mysqli("localhost", "username", "password", "database");
+    
+    //     // Sanitize the user input to ensure it's a number and prevent SQL injection
+    //     $useid = (int)$useid; 
+    
+    //     // Construct the SQL query
+    //     $sql = "SELECT * FROM users WHERE useid = $useid";
+    
+    //     // Execute the query
+    //     if ($result = $databaseLink->query($sql)) {
+    //         // Check if a row is returned
+    //         if ($result->num_rows > 0) {
+    //             $row = $result->fetch_assoc();
+    
+    //             // Populate the user object with data from the database
+    //             $this->useid = $row['useid'];
+    //             $this->useactive = $row['useactive'];
+    //             $this->uselogin = $row['uselogin'];
+    //             $this->usepassword = $row['usepassword'];
+    //             $this->usenom = $row['usenom'];
+    //             $this->useadmin = $row['useadmin'];
+    
+    //             $result->close();
+    //             return true;
+    //         } else {
+    //             $result->close();
+    //             return false; // User not found
+    //         }
+    //     } else {
+    //         return false; // Query execution failed
+    //     }
+    // }
+    
     public function LoadFromLogin($uselogin)
     {
 
@@ -85,41 +120,6 @@ class User
         $password = mt_rand(100000, 999999);
 
         __QUERY('UPDATE users SET usepassword=PASSWORD("' . __STRING($password) . '") WHERE useid=' . $this->useid);
-
-        /*
-        $HTML = "<html><body><div>Support Roxade bonjour.</div></body>";
-        $TEXT = "Votre nouveau mot de passe est : " . $password;
-        $mail = new PHPMailer();
-        $mail->From = "support@roxade.fr";
-        $mail->FromName = "ROXADE";
-        $mail->IsSMTP();
-        $mail->Host = SMTP_HOST;
-        $mail->Port = SMTP_PORT;
-        $mail->SMTPAuth = true;
-        $mail->Username = SMTP_LOGIN;
-        $mail->Password = SMTP_PASSWORD;
-        $mail->Subject = mb_encode_mimeheader("Votre mot de passe Roxade");
-        $mail->Body = $HTML;
-        $mail->AltBody = $TEXT;
-        $mail->IsHTML(true);
-        $mail->SMTPOptions = array(
-            'ssl' => array(
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                'allow_self_signed' => true
-            )
-        );
-
-        $mail->addAddress($this->uselogin);
-        if ($mail->Send()) {
-
-            // Prévoir envoi email via phpmailer
-            return ($password);
-        } else {
-            return false; //echec de l'envoie
-            
-        }
-        */
         return ($password);
     }
 
