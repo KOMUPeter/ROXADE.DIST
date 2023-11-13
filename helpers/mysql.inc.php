@@ -12,8 +12,10 @@ if ($databaseLink->connect_errno) {
     die;
 }
 
+// for multilingual support
 $databaseLink->query('SET NAMES "UTF8"');
 
+// checks for execution success and if there's an error, it terminates the script and displays an error message with details 
 function __QUERY($s) {
     global $databaseLink;
     if (!$result = $databaseLink->query($s)) {
@@ -23,6 +25,7 @@ function __QUERY($s) {
 }
 
 function __ARRAY($sql) {
+    // Retrieves the next row of a result set as an associative array, numeric, or both
     $row = $sql->fetch_array();
     return($row);
 }
@@ -36,16 +39,20 @@ function __FETCH($s) {
 }
 
 function __ROWS($s) {
+    // Returns the number of rows in the result set
     return($s->num_rows);
 }
 
+
 function __AFFECTED() {
+    // Returns the number of rows affected by the last MySQL operation
     global $databaseLink;
     return($databaseLink->affected_rows);
 }
 
 function __INSERT_ID() {
     global $databaseLink;
+    // Returns the value generated for an AUTO_INCREMENT column by the last query
     return($databaseLink->insert_id);
 }
 
@@ -56,6 +63,7 @@ function __UUID() {
 
 function __STRING($s) {
     global $databaseLink;
+    // escape characters within a string to make it safe to use in SQL queries
     return($databaseLink->real_escape_string(stripslashes($s)));
 }
 

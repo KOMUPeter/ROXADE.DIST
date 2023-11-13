@@ -49,7 +49,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         tokcct, 
         tokip, 
         toknav
-        ) VALUES (
+        ) VALUES ( 
         "' . __STRING($codeToken) . '", 
         NOW(), 
         DATE_ADD(NOW(), INTERVAL 86400 SECOND), 
